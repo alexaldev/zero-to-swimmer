@@ -13,6 +13,14 @@ koin = "3.5.6"
 room = "2.6.1"
 material = "1.12.0"
 jetbrainsKotlinJvm = "1.9.23"
+junit5 = "5.10.1"
+junit5-plugin = "1.10.0.0"
+junit5-compose = "1.4.0"
+mockk = "1.13.11"
+assertk = "0.28.1"
+turbine = "1.1.0"
+composeUiTestManifest = "1.6.8"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,6 +38,13 @@ room-ktx = { module = "androidx.room:room-ktx", version.ref = "room"}
 
 # Testing
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
+junit5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
+junit5-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
+junit5-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
+# junit5-android-test-compose = { module = "de.mannodermaus.junit5:android-test-compose", version.ref = "junit5-compose" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -37,6 +52,7 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
+junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5-plugin" }
 
 [bundles]
 room = [
