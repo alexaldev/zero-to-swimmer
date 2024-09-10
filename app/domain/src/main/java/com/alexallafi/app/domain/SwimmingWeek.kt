@@ -12,10 +12,10 @@ value class SwimmingWeek(
         val PERMITTED_RANGE = 1..6
 
         val FIRST = SwimmingWeek(1)
-        val SECOND = SwimmingWeek(1)
-        val THIRD = SwimmingWeek(1)
-        val FOURTH = SwimmingWeek(1)
-        val FIFTH = SwimmingWeek(1)
-        val SIXTH = SwimmingWeek(1)
+        val SECOND = SwimmingWeek(2)
+        val THIRD = SwimmingWeek(3)
+        val FOURTH = SwimmingWeek(4)
+        val FIFTH = SwimmingWeek(5)
+        val SIXTH = SwimmingWeek(6)
     }
 }

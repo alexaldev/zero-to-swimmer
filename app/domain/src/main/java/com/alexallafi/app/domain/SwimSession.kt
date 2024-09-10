@@ -4,5 +4,5 @@ data class SwimSession(
     val priority: Int,
     val completed: Boolean,
     val week: SwimmingWeek,
-    val swimSets: Set<SwimmingSet>
+    val swimSets: List<SwimmingSet>
 )

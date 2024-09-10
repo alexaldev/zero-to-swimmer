@@ -38,6 +38,7 @@ dependencies {
 
     implementation(projects.app.domain)
 
+    implementation(libs.kotlinx.serialization)
     implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.core.ktx)
@@ -49,9 +50,9 @@ dependencies {
     testImplementation(libs.assertk)
 
     androidTestImplementation(libs.junit5.api)
-//    androidTestImplementation(libs.junit5.engine)
-//    androidTestImplementation(libs.junit5.params)
-//    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.junit5.engine)
+    androidTestImplementation(libs.junit5.params)
+    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.mockk)
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.assertk)
