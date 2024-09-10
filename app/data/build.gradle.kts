@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.junit5)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -38,18 +38,22 @@ dependencies {
 
     implementation(projects.app.domain)
 
-    implementation(libs.material)
-    implementation(libs.bundles.room)
-    annotationProcessor(libs.room.compiler)
-    ksp(libs.room.compiler)
+    implementation(libs.koin.android)
+    implementation(libs.koin.core)
+    implementation(libs.core.ktx)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit5.api)
     testImplementation(libs.junit5.engine)
     testImplementation(libs.junit5.params)
     testImplementation(libs.mockk)
     testImplementation(libs.assertk)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+    androidTestImplementation(libs.junit5.api)
+//    androidTestImplementation(libs.junit5.engine)
+//    androidTestImplementation(libs.junit5.params)
+//    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.assertk)
+    androidTestImplementation(libs.coroutines.test)
 }
