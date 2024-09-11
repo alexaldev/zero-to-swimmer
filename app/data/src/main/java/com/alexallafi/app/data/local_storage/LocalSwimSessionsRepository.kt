@@ -8,6 +8,7 @@ import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.SwimmingWeek
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +21,7 @@ import java.io.File
 
 class LocalSwimSessionsRepository(
     private val context: Context,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher
 ) : SwimSessionsRepository {
 
     private val _sessionsFlow = MutableStateFlow<List<SwimSession>>(emptyList())
@@ -33,6 +34,7 @@ class LocalSwimSessionsRepository(
 
             if (file.exists()) {
                 val encoded = file.readText()
+                ensureActive()
                 val decoded = Json.decodeFromString<List<com.alexallafi.app.data.local_storage.SwimSession>>(encoded)
                 Result.success(decoded.toDomainModel())
             } else {
@@ -47,7 +49,7 @@ class LocalSwimSessionsRepository(
 
         withContext(ioDispatcher) {
 
-            val allSessions = getAll().getOrElse { return@withContext  }.toMutableList()
+            val allSessions = getAll().getOrElse { return@withContext }.toMutableList()
 
             val sessionIndex = allSessions.indexOfFirst { it.priority == swimSession.priority }
             if (sessionIndex != -1) {
