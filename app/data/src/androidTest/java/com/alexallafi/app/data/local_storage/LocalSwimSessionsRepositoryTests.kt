@@ -72,7 +72,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
             add(
@@ -80,7 +80,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 2,
                     completed = false,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
             add(
@@ -88,7 +88,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 3,
                     completed = false,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
         }
@@ -130,7 +130,7 @@ class LocalSwimSessionsRepositoryTests {
             priority = 2,
             completed = false,
             week = SwimmingWeek.FIRST,
-            swimSets = fakeSwimSets
+            swimSets = fakeSwimSets,,
         )
         val fakeSessions = buildList {
             add(
@@ -138,7 +138,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
             add(fakeSecondSession)
@@ -147,7 +147,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 3,
                     completed = false,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
         }
@@ -191,7 +191,7 @@ class LocalSwimSessionsRepositoryTests {
             priority = 2,
             completed = false,
             week = SwimmingWeek.FIRST,
-            swimSets = fakeSwimSets
+            swimSets = fakeSwimSets,,
         )
         val fakeSessions = buildList {
             add(
@@ -199,7 +199,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
             add(fakeSecondSession)
@@ -208,7 +208,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 3,
                     completed = false,
                     week = SwimmingWeek.SECOND,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
         }
@@ -252,7 +252,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
             add(
@@ -260,7 +260,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 2,
                     completed = false,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
             add(
@@ -268,7 +268,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 3,
                     completed = false,
                     week = SwimmingWeek.SECOND,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
         }
@@ -311,7 +311,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
             add(
@@ -319,7 +319,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 2,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
             add(
@@ -327,7 +327,7 @@ class LocalSwimSessionsRepositoryTests {
                     priority = 3,
                     completed = false,
                     week = SwimmingWeek.SECOND,
-                    swimSets = fakeSwimSets
+                    swimSets = fakeSwimSets,,
                 )
             )
         }

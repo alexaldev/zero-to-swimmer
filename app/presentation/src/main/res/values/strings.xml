@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="completed">Completed</string>
+    <string name="metersUnit">m</string>
+    <string name="total">total</string>
+    <string name="swim_round_description">%d x %d, rest for %d between %d</string>
+    <string name="completed_at">Completed at </string>
+</resources>
