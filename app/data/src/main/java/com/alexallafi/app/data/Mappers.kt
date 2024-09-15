@@ -12,7 +12,7 @@ fun List<SwimSession>.toDataModel(): List<com.alexallafi.app.data.local_storage.
 
     return this.map {
         com.alexallafi.app.data.local_storage.SwimSession(
-            priority = it.priority,
+            priority = it.weekPriority,
             completed = it.completed,
             week = it.week.value,
             swimSets = it.swimSets.map { domainSet -> domainSet.toDataModel() },
@@ -39,11 +39,11 @@ fun List<com.alexallafi.app.data.local_storage.SwimSession>.toDomainModel(): Lis
 
     return this.map {
         SwimSession(
-            priority = it.priority,
+            weekPriority = it.priority,
             completed = it.completed,
             week = SwimmingWeek(it.week),
             swimSets = it.swimSets.map { domainSet -> domainSet.toDomainModel() },
             completedAt = it.completedAt?.let { completedStr -> OffsetDateTime.parse(completedStr, formatter) }
         )
-    }
+    }.sortedBy { it.totalPriority}
 }

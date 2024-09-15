@@ -12,6 +12,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.OffsetDateTime
 
 class ViewItemMapperTests {
 
@@ -45,20 +46,48 @@ class ViewItemMapperTests {
                 endText = "[600/${600 + 1200 + 1800}] Completed",
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                isCompleted = true
+                isCompleted = true,
+                title = "Day 1",
+                message = testMapper.sessionsCompletedMessaged(fakeSessions.first()),
+                swimRounds = "",
+                isExpanded = false
             ),
-            SwimSessionListItem.SwimSessionViewItem(),
-            SwimSessionListItem.SwimSessionViewItem(),
+            SwimSessionListItem.SwimSessionViewItem(
+                isCompleted = false,
+                title = "Day 2",
+                message = testMapper.sessionsCompletedMessaged(fakeSessions[1]),
+                swimRounds = "",
+                isExpanded = false
+            ),
+            SwimSessionListItem.SwimSessionViewItem(
+                isCompleted = false,
+                title = "Day 3",
+                message = testMapper.sessionsCompletedMessaged(fakeSessions[2]),
+                swimRounds = "",
+                isExpanded = false
+            ),
             SwimSessionListItem.HeaderItem(
                 startText = "Week 2",
                 endText = "[0/2400] Completed"
             ),
-            SwimSessionListItem.SwimSessionViewItem(),
+            SwimSessionListItem.SwimSessionViewItem(
+                isCompleted = false,
+                title = "Day 1",
+                message = testMapper.sessionsCompletedMessaged(fakeSessions[3]),
+                swimRounds = "",
+                isExpanded = false
+            ),
             SwimSessionListItem.HeaderItem(
                 startText = "Week 3",
                 endText = "[0/3000] Completed"
             ),
-            SwimSessionListItem.SwimSessionViewItem(),
+            SwimSessionListItem.SwimSessionViewItem(
+                isCompleted = false,
+                title = "Day 1",
+                message = testMapper.sessionsCompletedMessaged(fakeSessions[4]),
+                swimRounds = "",
+                isExpanded = false
+            ),
         )
 
         val result = testMapper.mapToViewItems(fakeSessions)
@@ -94,35 +123,35 @@ class ViewItemMapperTests {
     private fun fakeSwimSessionsValidSets(): List<SwimSession> {
         return listOf(
             SwimSession(
-                priority = 1,
+                weekPriority = 1,
                 completed = true,
                 week = SwimmingWeek.FIRST,
                 swimSets = buildList { repeat(1) { add(fakeSwimSet())} },
                 completedAt = null
             ),
             SwimSession(
-                priority = 2,
+                weekPriority = 2,
                 completed = false,
                 week = SwimmingWeek.FIRST,
                 swimSets = buildList { repeat(2) { add(fakeSwimSet())} },
                 completedAt = null
             ),
             SwimSession(
-                priority = 4,
+                weekPriority = 1,
                 completed = false,
                 week = SwimmingWeek.SECOND,
                 swimSets = buildList { repeat(4) { add(fakeSwimSet())} },
                 completedAt = null
             ),
             SwimSession(
-                priority = 5,
+                weekPriority = 1,
                 completed = false,
                 week = SwimmingWeek.THIRD,
                 swimSets = buildList { repeat(6) { add(fakeSwimSet())} },
                 completedAt = null
             ),
             SwimSession(
-                priority = 3,
+                weekPriority = 3,
                 completed = false,
                 week = SwimmingWeek.FIRST,
                 swimSets = buildList { repeat(3) { add(fakeSwimSet())} },
@@ -134,42 +163,42 @@ class ViewItemMapperTests {
     private fun fakeSwimSessionsEmptySets(): List<SwimSession> {
         val fakeSessions = listOf(
             SwimSession(
-                priority = 1,
+                weekPriority = 1,
                 completed = true,
                 week = SwimmingWeek.FIRST,
                 swimSets = emptyList(),
-                completedAt = null
+                completedAt = OffsetDateTime.now()
             ),
             SwimSession(
-                priority = 2,
+                weekPriority = 2,
                 completed = false,
                 week = SwimmingWeek.FIRST,
                 swimSets = emptyList(),
                 completedAt = null
             ),
             SwimSession(
-                priority = 4,
+                weekPriority = 1,
                 completed = false,
                 week = SwimmingWeek.SECOND,
                 swimSets = emptyList(),
                 completedAt = null
             ),
             SwimSession(
-                priority = 5,
+                weekPriority = 1,
                 completed = false,
                 week = SwimmingWeek.THIRD,
                 swimSets = emptyList(),
                 completedAt = null
             ),
             SwimSession(
-                priority = 3,
+                weekPriority = 3,
                 completed = false,
                 week = SwimmingWeek.FIRST,
                 swimSets = emptyList(),
                 completedAt = null
             )
         )
-        return fakeSessions
+        return fakeSessions.sortedBy { it.totalPriority }
     }
 
     private fun fakeSwimSet() = SwimmingSet(meters = 300, count = 2, restBreathsCount = 10)

@@ -7,6 +7,7 @@ class FakeStringResourcesProvider : StringResourcesProvider {
             R.string.completed -> "Completed"
             R.string.day -> "Day"
             R.string.swim_round_description -> "%d x %d, rest for %d between %d"
+            R.string.completed_at -> "Completed at %s"
             else -> ""
         }
     }

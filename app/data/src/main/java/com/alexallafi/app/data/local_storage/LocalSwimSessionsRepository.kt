@@ -7,14 +7,11 @@ import com.alexallafi.app.domain.SwimSession
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.SwimmingWeek
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -51,7 +48,7 @@ class LocalSwimSessionsRepository(
 
             val allSessions = getAll().getOrElse { return@withContext }.toMutableList()
 
-            val sessionIndex = allSessions.indexOfFirst { it.priority == swimSession.priority }
+            val sessionIndex = allSessions.indexOfFirst { it.weekPriority == swimSession.weekPriority }
             if (sessionIndex != -1) {
                 val updatedSession = allSessions[sessionIndex].copy(completed = true)
                 allSessions[sessionIndex] = updatedSession

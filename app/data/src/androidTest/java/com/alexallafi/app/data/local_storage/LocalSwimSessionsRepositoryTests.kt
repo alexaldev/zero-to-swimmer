@@ -69,35 +69,129 @@ class LocalSwimSessionsRepositoryTests {
         val fakeSessions = buildList<SwimSession> {
             add(
                 SwimSession(
-                    priority = 1,
+                    weekPriority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
             add(
                 SwimSession(
-                    priority = 2,
+                    weekPriority = 2,
                     completed = false,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
             add(
                 SwimSession(
-                    priority = 3,
+                    weekPriority = 3,
                     completed = false,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
         }
         testRepository.addAll(fakeSessions)
 
         val testSessions = testRepository.getAll()
+
         assertThat(testSessions.isSuccess).isTrue()
         assertThat(testSessions.getOrNull()).isNotNull()
         assertThat(testSessions.getOrNull()!!).isEqualTo(fakeSessions)
+    }
+
+    @Test
+    fun getAllSortedByTotalPriority() = runTest {
+
+        val fakeSwimSets = buildList<SwimmingSet> {
+            add(
+                SwimmingSet(
+                    meters = 100,
+                    count = 4,
+                    restBreathsCount = 12
+                )
+            )
+            add(
+                SwimmingSet(
+                    meters = 100,
+                    count = 4,
+                    restBreathsCount = 12
+                )
+            )
+            add(
+                SwimmingSet(
+                    meters = 100,
+                    count = 4,
+                    restBreathsCount = 12
+                )
+            )
+        }
+
+        val fakeSessions = buildList<SwimSession> {
+            add(
+                SwimSession(
+                    weekPriority = 1,
+                    completed = true,
+                    week = SwimmingWeek.FIRST,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
+                )
+            )
+            add(
+                SwimSession(
+                    weekPriority = 1,
+                    completed = false,
+                    week = SwimmingWeek.SECOND,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
+                )
+            )
+            add(
+                SwimSession(
+                    weekPriority = 3,
+                    completed = false,
+                    week = SwimmingWeek.SECOND,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
+                )
+            )
+            add(
+                SwimSession(
+                    weekPriority = 2,
+                    completed = false,
+                    week = SwimmingWeek.SECOND,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
+                )
+            )
+            add(
+                SwimSession(
+                    weekPriority = 2,
+                    completed = false,
+                    week = SwimmingWeek.FIRST,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
+                )
+            )
+            add(
+                SwimSession(
+                    weekPriority = 3,
+                    completed = false,
+                    week = SwimmingWeek.FIRST,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
+                )
+            )
+        }
+        testRepository.addAll(fakeSessions)
+
+        val testSessions = testRepository.getAll().getOrThrow()
+
+        assertThat(testSessions).isEqualTo(fakeSessions.sortedBy { it.totalPriority })
     }
 
     @Test
@@ -127,27 +221,39 @@ class LocalSwimSessionsRepositoryTests {
         }
 
         val fakeSecondSession = SwimSession(
-            priority = 2,
+            weekPriority = 2,
             completed = false,
             week = SwimmingWeek.FIRST,
-            swimSets = fakeSwimSets,,
+            swimSets = fakeSwimSets,
+            completedAt = null,
         )
         val fakeSessions = buildList {
             add(
                 SwimSession(
-                    priority = 1,
+                    weekPriority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
             add(fakeSecondSession)
             add(
                 SwimSession(
-                    priority = 3,
+                    weekPriority = 3,
                     completed = false,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
+                )
+            )
+            add(
+                SwimSession(
+                    weekPriority = 2,
+                    completed = false,
+                    week = SwimmingWeek.SECOND,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
         }
@@ -155,7 +261,7 @@ class LocalSwimSessionsRepositoryTests {
         testRepository.markAsCompleted(fakeSecondSession)
 
         val testSecondStoredSession =
-            testRepository.getAll().getOrThrow().first { it.priority == fakeSecondSession.priority }
+            testRepository.getAll().getOrThrow().first { it.weekPriority == fakeSecondSession.weekPriority }
 
         assertThat(testSecondStoredSession.completed).isTrue()
     }
@@ -188,27 +294,30 @@ class LocalSwimSessionsRepositoryTests {
         }
 
         val fakeSecondSession = SwimSession(
-            priority = 2,
+            weekPriority = 2,
             completed = false,
             week = SwimmingWeek.FIRST,
-            swimSets = fakeSwimSets,,
+            swimSets = fakeSwimSets,
+            completedAt = null,
         )
         val fakeSessions = buildList {
             add(
                 SwimSession(
-                    priority = 1,
+                    weekPriority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
             add(fakeSecondSession)
             add(
                 SwimSession(
-                    priority = 3,
+                    weekPriority = 3,
                     completed = false,
                     week = SwimmingWeek.SECOND,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
         }
@@ -249,26 +358,29 @@ class LocalSwimSessionsRepositoryTests {
         val fakeSessions = buildList {
             add(
                 SwimSession(
-                    priority = 1,
+                    weekPriority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
             add(
                 SwimSession(
-                    priority = 2,
+                    weekPriority = 2,
                     completed = false,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
             add(
                 SwimSession(
-                    priority = 3,
+                    weekPriority = 3,
                     completed = false,
                     week = SwimmingWeek.SECOND,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
         }
@@ -308,26 +420,29 @@ class LocalSwimSessionsRepositoryTests {
         val fakeSessions = buildList {
             add(
                 SwimSession(
-                    priority = 1,
+                    weekPriority = 1,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
             add(
                 SwimSession(
-                    priority = 2,
+                    weekPriority = 2,
                     completed = true,
                     week = SwimmingWeek.FIRST,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
             add(
                 SwimSession(
-                    priority = 3,
+                    weekPriority = 3,
                     completed = false,
                     week = SwimmingWeek.SECOND,
-                    swimSets = fakeSwimSets,,
+                    swimSets = fakeSwimSets,
+                    completedAt = null,
                 )
             )
         }
