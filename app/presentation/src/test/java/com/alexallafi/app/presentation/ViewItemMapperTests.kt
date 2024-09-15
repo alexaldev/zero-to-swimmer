@@ -87,7 +87,7 @@ class ViewItemMapperTests {
                 message = testMapper.sessionsCompletedMessaged(fakeSessions[4]),
                 swimRounds = "",
                 isExpanded = false
-            ),
+            )
         )
 
         val result = testMapper.mapToViewItems(fakeSessions)

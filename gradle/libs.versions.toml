@@ -1,6 +1,7 @@
 [versions]
 agp = "8.5.2"
 kotlin = "2.0.10"
+activityKtx = "1.9.2"
 coreKtx = "1.13.1"
 coroutines = "1.8.1"
 coroutines-test = "1.8.1"
@@ -22,10 +23,11 @@ assertk = "0.28.1"
 turbine = "1.1.0"
 composeUiTestManifest = "1.6.8"
 coreKtxVersion = "1.6.1"
-
+viewBindingDelegate = "1.5.9"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "jetbrainsKotlinSerialization"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -35,6 +37,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+viewBindingDelegate = { module = "com.github.kirich1409:viewbindingpropertydelegate-noreflection", version.ref = "viewBindingDelegate"}
 
 # Testing
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }

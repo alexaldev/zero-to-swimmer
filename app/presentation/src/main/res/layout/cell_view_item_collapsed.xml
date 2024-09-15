@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="32dp">
+
+    <ImageView
+        android:id="@+id/completed_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/background_rounded_blue"
+        app:srcCompat="@drawable/pool"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/session_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/completed_icon"
+        app:layout_constraintTop_toTopOf="@id/completed_icon"
+        android:layout_marginStart="16dp"
+        tools:text="Day 01"/>
+
+    <TextView
+        android:id="@+id/session_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/session_title"
+        app:layout_constraintBottom_toBottomOf="@id/completed_icon"
+        app:layout_constraintTop_toBottomOf="@id/session_title"
+        android:textSize="14sp"
+        tools:text="900m total"/>
+
+    <ImageView
+        android:id="@+id/collapse_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/baseline_arrow_drop_down_circle_24"
+        app:layout_constraintTop_toTopOf="@id/completed_icon"
+        app:layout_constraintBottom_toBottomOf="@id/completed_icon"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
