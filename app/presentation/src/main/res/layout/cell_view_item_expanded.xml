@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/background_rounded_blue"
-        app:srcCompat="@drawable/ic_check"
+        app:srcCompat="@drawable/pool"
         app:tint="@color/white" />
 
     <TextView
@@ -42,8 +42,15 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/baseline_arrow_drop_down_24"
+        app:srcCompat="@drawable/baseline_arrow_drop_up_24"
         app:layout_constraintTop_toTopOf="@id/completed_icon"
         app:layout_constraintBottom_toBottomOf="@id/completed_icon"/>
+
+    <TextView
+        android:id="@+id/sets_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/completed_icon"
+        android:layout_marginTop="32dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
