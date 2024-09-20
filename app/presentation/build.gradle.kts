@@ -44,6 +44,10 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.viewBindingDelegate)
     implementation(libs.material)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.koin.android)
+    implementation(libs.koin.core)
 
     testImplementation(libs.coroutines.test)
     testImplementation(libs.junit5.api)

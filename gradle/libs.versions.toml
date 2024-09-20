@@ -2,6 +2,8 @@
 agp = "8.5.2"
 kotlin = "2.0.10"
 activityKtx = "1.9.2"
+lifecycleViewModel = "2.8.6"
+lifecycleLiveData = "2.8.6"
 coreKtx = "1.13.1"
 coroutines = "1.8.1"
 coroutines-test = "1.8.1"
@@ -28,6 +30,8 @@ viewBindingDelegate = "1.5.9"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
+androidx-lifecycle_viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewModel"}
+androidx-lifecycle_livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLiveData"}
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "jetbrainsKotlinSerialization"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }

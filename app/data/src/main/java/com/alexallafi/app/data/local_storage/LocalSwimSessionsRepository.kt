@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -32,8 +33,14 @@ class LocalSwimSessionsRepository(
             if (file.exists()) {
                 val encoded = file.readText()
                 ensureActive()
-                val decoded = Json.decodeFromString<List<com.alexallafi.app.data.local_storage.SwimSession>>(encoded)
-                Result.success(decoded.toDomainModel())
+                try {
+                    val decoded = Json.decodeFromString<List<com.alexallafi.app.data.local_storage.SwimSession>>(encoded)
+                    val decodedDomain = decoded.toDomainModel()
+                    _sessionsFlow.emit(decodedDomain)
+                    Result.success(decodedDomain)
+                } catch (e: SerializationException) {
+                    Result.failure(e)
+                }
             } else {
                 Result.failure(IllegalStateException("Swimming sessions file does not exist"))
             }
@@ -52,7 +59,7 @@ class LocalSwimSessionsRepository(
             if (sessionIndex != -1) {
                 val updatedSession = allSessions[sessionIndex].copy(completed = true)
                 allSessions[sessionIndex] = updatedSession
-                _sessionsFlow.update { allSessions }
+                _sessionsFlow.emit(allSessions)
                 addAll(allSessions)
             }
         }
