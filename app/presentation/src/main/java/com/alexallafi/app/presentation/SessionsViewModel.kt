@@ -1,10 +1,9 @@
 package com.alexallafi.app.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.alexallafi.app.domain.InitialDataPopulator
 import com.alexallafi.app.domain.SwimSessionsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -14,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class SessionsViewModel(
     private val sessionsRepository: SwimSessionsRepository,
-    private val viewItemsMapper: ViewItemsMapper
+    private val viewItemsMapper: ViewItemsMapper,
+    private val initialDataPopulator: InitialDataPopulator
 ) : ViewModel() {
 
     private val _sessionsViewItems: MutableStateFlow<List<SwimSessionListItem>> = MutableStateFlow(
@@ -31,6 +31,28 @@ class SessionsViewModel(
             }
             .launchIn(viewModelScope)
 
-        viewModelScope.launch { sessionsRepository.getAll() }
+        viewModelScope.launch { populateDataIfNeeded() }
+    }
+
+    private suspend fun populateDataIfNeeded() {
+        if (sessionsRepository.getAll().isFailure) {
+            sessionsRepository.addAll(initialDataPopulator.createSessions())
+        }
+    }
+
+    fun onAction(action: SwimSessionAction) {
+        when(action) {
+            is SwimSessionAction.CollapseSession -> {
+
+                val mutableCurrentData = _sessionsViewItems.value.toMutableList()
+
+                val indexToUpdate = mutableCurrentData
+                    .indexOf(action.sessionViewItem.copy(isExpanded = false))
+
+
+            }
+            is SwimSessionAction.ExpandSession -> TODO()
+            is SwimSessionAction.SetAsCompleted -> TODO()
+        }
     }
 }

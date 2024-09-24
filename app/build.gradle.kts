@@ -45,7 +45,8 @@ dependencies {
     implementation(projects.app.presentation)
     implementation(projects.app.data)
     implementation(projects.app.domain)
-
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

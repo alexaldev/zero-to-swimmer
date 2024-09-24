@@ -14,13 +14,12 @@ import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.presentation.databinding.FragmentSwimSessionsBinding
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
 
     private val viewBinding by viewBinding(FragmentSwimSessionsBinding::bind)
-
-    private val repository: SwimSessionsRepository by inject()
-    private val viewItemsMapper: ViewItemsMapper by inject()
+    private val viewModel: SessionsViewModel by viewModel()
 
     private lateinit var adapter: SwimSessionsViewAdapter
 
@@ -41,14 +40,8 @@ class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
         viewBinding.sessionsList.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.sessionsList.adapter = this.adapter
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                repository
-                    .observeAll()
-                    .collect { adapter.updateData(viewItemsMapper.mapToViewItems(it)) }
-            }
-
-            repository.getAll()
+        viewModel.sessionViewItems.observe(viewLifecycleOwner) {
+            adapter.updateData(it)
         }
     }
 

@@ -36,7 +36,7 @@ class LocalSwimSessionsRepository(
                 try {
                     val decoded = Json.decodeFromString<List<com.alexallafi.app.data.local_storage.SwimSession>>(encoded)
                     val decodedDomain = decoded.toDomainModel()
-                    _sessionsFlow.emit(decodedDomain)
+                    _sessionsFlow.update { decodedDomain }
                     Result.success(decodedDomain)
                 } catch (e: SerializationException) {
                     Result.failure(e)
@@ -73,7 +73,9 @@ class LocalSwimSessionsRepository(
 
             val sessionsEncoded = Json.encodeToString(swimSessions.toDataModel())
 
-            file.writeText(sessionsEncoded)
+            file.writeText(sessionsEncoded).also {
+                _sessionsFlow.update { swimSessions }
+            }
         }
     }
 
