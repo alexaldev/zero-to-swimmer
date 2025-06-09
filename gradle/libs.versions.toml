@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.2"
+agp = "8.8.0"
 kotlin = "2.0.10"
 activityKtx = "1.9.2"
 lifecycleViewModel = "2.8.6"
@@ -26,6 +26,7 @@ turbine = "1.1.0"
 composeUiTestManifest = "1.6.8"
 coreKtxVersion = "1.6.1"
 viewBindingDelegate = "1.5.9"
+toolchainResolver = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin"}
 viewBindingDelegate = { module = "com.github.kirich1409:viewbindingpropertydelegate-noreflection", version.ref = "viewBindingDelegate"}
 
 # Testing
@@ -61,5 +63,6 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5-plugin" }
+toolchainresolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "toolchainResolver" }
 
 [bundles]

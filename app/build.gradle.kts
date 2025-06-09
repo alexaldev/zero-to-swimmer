@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.alexallafi.zerotoswimmer"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.alexallafi.zerotoswimmer"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -26,13 +26,14 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+
+    kotlin {
+        jvmToolchain(17)
     }
 
     buildFeatures {
@@ -47,6 +48,7 @@ dependencies {
     implementation(projects.app.domain)
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+    implementation(libs.koin.test)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
