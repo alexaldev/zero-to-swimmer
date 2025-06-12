@@ -35,6 +35,7 @@
         app:layout_constraintBottom_toBottomOf="@id/completed_icon"
         app:layout_constraintTop_toBottomOf="@id/session_title"
         android:textSize="14sp"
+        style="?attr/textAppearanceHeadlineSmall"
         tools:text="900m total"/>
 
     <ImageView
@@ -42,7 +43,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/baseline_arrow_drop_up_24"
+        android:src="@drawable/baseline_arrow_drop_up_24"
         app:layout_constraintTop_toTopOf="@id/completed_icon"
         app:layout_constraintBottom_toBottomOf="@id/completed_icon"/>
 

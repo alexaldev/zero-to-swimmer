@@ -10,7 +10,9 @@ import com.alexallafi.app.presentation.databinding.CellViewItemWeekHeaderBinding
 import java.lang.IllegalArgumentException
 
 class SwimSessionsViewAdapter(
-    private val sessionItems: MutableList<SwimSessionListItem> = mutableListOf()
+    private val sessionItems: MutableList<SwimSessionListItem> = mutableListOf(),
+    private val expandListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
+    private val collapseListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit
 ): RecyclerView.Adapter<ViewHolder>() {
 
     companion object {
@@ -40,13 +42,13 @@ class SwimSessionsViewAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         return when(viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder(
-                CellViewItemWeekHeaderBinding.inflate(layoutInflater)
+                CellViewItemWeekHeaderBinding.inflate(layoutInflater, parent, false)
             )
             VIEW_TYPE_SESSION_EXPANDED -> ExpandedSessionViewHolder(
-                CellViewItemExpandedBinding.inflate(layoutInflater)
+                CellViewItemExpandedBinding.inflate(layoutInflater, parent, false)
             )
             VIEW_TYPE_SESSION_COLLAPSED -> CollapsedSessionViewHolder(
-                CellViewItemCollapsedBinding.inflate(layoutInflater)
+                CellViewItemCollapsedBinding.inflate(layoutInflater, parent, false)
             )
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
         }
@@ -80,6 +82,7 @@ class SwimSessionsViewAdapter(
                 this.sessionTitle.text = item.title
                 this.sessionMessage.text = item.message
                 if (item.isCompleted) this.completedIcon.setImageResource(R.drawable.ic_check)
+                collapseIcon.setOnClickListener { expandListener(item) }
             }
         }
     }
@@ -93,6 +96,7 @@ class SwimSessionsViewAdapter(
                 this.sessionMessage.text = item.message
                 if (item.isCompleted) this.completedIcon.setImageResource(R.drawable.ic_check)
                 this.setsView.text = item.swimRounds
+                collapseIcon.setOnClickListener { collapseListener(item) }
             }
         }
     }

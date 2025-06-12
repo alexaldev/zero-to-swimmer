@@ -7,6 +7,7 @@ import com.alexallafi.app.domain.InitialDataPopulator
 import com.alexallafi.app.domain.SwimSessionsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class SessionsViewModel(
 
         sessionsRepository
             .observeAll()
-            .onEach { sessions ->
+            .map { sessions ->
                 _sessionsViewItems.update { viewItemsMapper.mapToViewItems(sessions) }
             }
             .launchIn(viewModelScope)
@@ -44,14 +45,25 @@ class SessionsViewModel(
         when(action) {
             is SwimSessionAction.CollapseSession -> {
 
-                val mutableCurrentData = _sessionsViewItems.value.toMutableList()
-
-                val indexToUpdate = mutableCurrentData
-                    .indexOf(action.sessionViewItem.copy(isExpanded = false))
-
-
+                _sessionsViewItems.update { currentList ->
+                    currentList.map { item ->
+                        if (item is SwimSessionListItem.SwimSessionViewItem && item == action.sessionViewItem) {
+                            item.copy(isExpanded = false)
+                        } else
+                            item
+                    }
+                }
             }
-            is SwimSessionAction.ExpandSession -> TODO()
+            is SwimSessionAction.ExpandSession -> {
+                _sessionsViewItems.update { currentList ->
+                    currentList.map { item ->
+                        if (item is SwimSessionListItem.SwimSessionViewItem && item == action.sessionViewItem) {
+                            item.copy(isExpanded = true)
+                        } else
+                            item
+                    }
+                }
+            }
             is SwimSessionAction.SetAsCompleted -> TODO()
         }
     }

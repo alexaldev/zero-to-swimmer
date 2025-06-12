@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Primary theme colors -->
+    <color name="colorPrimary">#00BBD6</color> <!-- Pool Blue -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- White text on primary -->
+
+    <!-- Surface (optional for list items or cards) -->
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorOnSurface">#212121</color>
+
+    <!-- Secondary text -->
+    <color name="colorSecondaryText">#E0F7FA</color>
+    <!-- Accent (optional for icons, buttons) -->
+    <color name="colorAccent">#FFC107</color> <!-- Amber -->
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

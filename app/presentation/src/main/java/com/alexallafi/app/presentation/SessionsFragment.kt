@@ -29,7 +29,10 @@ class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
         savedInstanceState: Bundle?
     ): View? {
 
-        adapter = SwimSessionsViewAdapter()
+        adapter = SwimSessionsViewAdapter(
+            collapseListener = {viewModel.onAction(SwimSessionAction.CollapseSession(it))},
+            expandListener = {viewModel.onAction(SwimSessionAction.ExpandSession(it))}
+        )
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -37,7 +40,7 @@ class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.sessionsList.layoutManager = LinearLayoutManager(requireContext())
+        viewBinding.sessionsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewBinding.sessionsList.adapter = this.adapter
 
         viewModel.sessionViewItems.observe(viewLifecycleOwner) {

@@ -13,24 +13,39 @@ class DefaultInitialDataPopulator : InitialDataPopulator {
                 completed = false,
                 week = SwimmingWeek.FIRST,
                 completedAt = null,
-                swimSets = listOf(
-                    SwimmingSet(
-                        restBreathsCount = 12,
-                        count = 4,
-                        meters = 100
-                    ),
-                    SwimmingSet(
-                        restBreathsCount = 8,
-                        count = 4,
-                        meters = 50
-                    ),
-                    SwimmingSet(
-                        restBreathsCount = 4,
-                        count = 4,
-                        meters = 25
-                    )
+                swimSets = buildList {
+                    this += swimSet(12, 4, 100)
+                    this += swimSet(8, 4, 50)
+                    this += swimSet(4, 4, 25)
+                }
                 )
-            ))
+            )
+            add(SwimSession(
+                weekPriority = 2,
+                completed = false,
+                week = SwimmingWeek.FIRST,
+                completedAt = null,
+                swimSets = buildList {
+                    this += swimSet(12, 4, 100)
+                    this += swimSet(8, 4, 50)
+                    this += swimSet(4, 4, 25)
+                }
+            )
+            )
+            add(SwimSession(
+                weekPriority = 1,
+                completed = false,
+                week = SwimmingWeek.SECOND,
+                completedAt = null,
+                swimSets = buildList {
+                    this += swimSet(12, 4, 100)
+                    this += swimSet(8, 4, 50)
+                    this += swimSet(4, 4, 25)
+                }
+            )
+            )
         }
     }
+
+    fun swimSet(restBreaths: Int, count: Int, meters: Int) = SwimmingSet(restBreathsCount = restBreaths, count = count, meters = meters)
 }

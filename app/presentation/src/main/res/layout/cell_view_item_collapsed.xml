@@ -42,7 +42,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/baseline_arrow_drop_down_24"
+        android:src="@drawable/baseline_arrow_drop_down_24"
         app:layout_constraintTop_toTopOf="@id/completed_icon"
         app:layout_constraintBottom_toBottomOf="@id/completed_icon"/>
 

@@ -63,6 +63,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5-plugin" }
-toolchainresolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "toolchainResolver" }
 
 [bundles]
