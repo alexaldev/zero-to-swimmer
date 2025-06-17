@@ -1,7 +1,10 @@
 package com.alexallafi.app.presentation
 
+import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.alexallafi.app.presentation.databinding.CellViewItemCollapsedBinding
@@ -9,6 +12,7 @@ import com.alexallafi.app.presentation.databinding.CellViewItemExpandedBinding
 import com.alexallafi.app.presentation.databinding.CellViewItemWeekHeaderBinding
 
 class SwimSessionsViewAdapter(
+    private val context: Context,
     private val sessionItems: MutableList<SwimSessionListItem> = mutableListOf(),
     private val expandListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
     private val collapseListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
@@ -81,11 +85,22 @@ class SwimSessionsViewAdapter(
             with(viewBinding) {
                 this.sessionTitle.text = item.title
                 this.sessionMessage.text = item.message
-                val icon = if (item.isCompleted) R.drawable.ic_check else R.drawable.pool
-                completedIcon.setImageResource(icon)
+                if (item.isCompleted) completedUI() else notCompletedUI()
                 completedIcon.setOnClickListener { onCompletedToggleListener(item) }
                 collapseIcon.setOnClickListener { expandListener(item) }
             }
+        }
+
+        private fun notCompletedUI() {
+            val icon =  R.drawable.pool
+            viewBinding.completedIcon.setImageResource(icon)
+            viewBinding.root.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white))
+        }
+
+        private fun completedUI() {
+            val icon =  R.drawable.ic_check
+            viewBinding.completedIcon.setImageResource(icon)
+            viewBinding.root.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey))
         }
     }
 

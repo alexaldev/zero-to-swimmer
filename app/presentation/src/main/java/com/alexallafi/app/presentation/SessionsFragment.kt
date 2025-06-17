@@ -24,6 +24,7 @@ class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
     ): View? {
 
         adapter = SwimSessionsViewAdapter(
+            requireContext(),
             collapseListener = {viewModel.onAction(SwimSessionAction.CollapseSession(it))},
             expandListener = {viewModel.onAction(SwimSessionAction.ExpandSession(it))},
             onCompletedToggleListener = {viewModel.onAction(SwimSessionAction.CompletedToggled(it))}

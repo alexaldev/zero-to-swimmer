@@ -43,7 +43,7 @@ class ViewItemsMapper(
             message = sessionsCompletedMessaged(this),
             isCompleted = this.completed,
             swimRounds = this.swimSets.joinToString("\n") { swimSet ->
-                stringResourcesProvider.getString(R.string.swim_round_description).format(swimSet.count, swimSet.meters, swimSet.restBreathsCount)
+                stringResourcesProvider.getString(R.string.swim_round_description).format(swimSet.count, swimSet.meters, swimSet.restBreathsCount, swimSet.meters)
             }
 
         )
