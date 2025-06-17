@@ -38,10 +38,10 @@ class ViewItemsMapper(
     private fun SwimSession.toSwimSessionViewItem(): SwimSessionListItem.SwimSessionViewItem {
 
         return SwimSessionListItem.SwimSessionViewItem(
-            isCompleted = this.completed,
+            id = this.id,
             title = "${stringResourcesProvider.getString(R.string.day)} ${((this.weekPriority - 1)%(SwimSession.AVAILABLE_WEEK_PRIORITIES.last)) + 1}",
-            isExpanded = false,
             message = sessionsCompletedMessaged(this),
+            isCompleted = this.completed,
             swimRounds = this.swimSets.joinToString("\n") { swimSet ->
                 stringResourcesProvider.getString(R.string.swim_round_description).format(swimSet.count, swimSet.meters, swimSet.restBreathsCount)
             }

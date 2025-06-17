@@ -10,6 +10,11 @@ data class SwimSession(
     val completedAt: OffsetDateTime?
 ) {
 
+    val id: String
+        get() {
+            return "$week-$weekPriority"
+        }
+
     val totalPriority: Int
         get() {
             return weekPriority + (AVAILABLE_WEEK_PRIORITIES.last * week.value)

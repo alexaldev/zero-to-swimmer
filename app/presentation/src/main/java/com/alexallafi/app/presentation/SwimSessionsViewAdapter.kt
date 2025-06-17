@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.alexallafi.app.presentation.databinding.CellViewItemCollapsedBinding
 import com.alexallafi.app.presentation.databinding.CellViewItemExpandedBinding
 import com.alexallafi.app.presentation.databinding.CellViewItemWeekHeaderBinding
-import java.lang.IllegalArgumentException
 
 class SwimSessionsViewAdapter(
     private val sessionItems: MutableList<SwimSessionListItem> = mutableListOf(),
     private val expandListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
-    private val collapseListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit
+    private val collapseListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
+    private val onCompletedToggleListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit
 ): RecyclerView.Adapter<ViewHolder>() {
 
     companion object {
@@ -81,7 +81,9 @@ class SwimSessionsViewAdapter(
             with(viewBinding) {
                 this.sessionTitle.text = item.title
                 this.sessionMessage.text = item.message
-                if (item.isCompleted) this.completedIcon.setImageResource(R.drawable.ic_check)
+                val icon = if (item.isCompleted) R.drawable.ic_check else R.drawable.pool
+                completedIcon.setImageResource(icon)
+                completedIcon.setOnClickListener { onCompletedToggleListener(item) }
                 collapseIcon.setOnClickListener { expandListener(item) }
             }
         }
@@ -94,7 +96,9 @@ class SwimSessionsViewAdapter(
             with(viewBinding) {
                 this.sessionTitle.text = item.title
                 this.sessionMessage.text = item.message
-                if (item.isCompleted) this.completedIcon.setImageResource(R.drawable.ic_check)
+                val icon = if (item.isCompleted) R.drawable.ic_check else R.drawable.pool
+                completedIcon.setImageResource(icon)
+                completedIcon.setOnClickListener { onCompletedToggleListener(item) }
                 this.setsView.text = item.swimRounds
                 collapseIcon.setOnClickListener { collapseListener(item) }
             }

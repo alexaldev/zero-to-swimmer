@@ -16,6 +16,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.time.OffsetDateTime
 
 class LocalSwimSessionsRepository(
     private val context: Context,
@@ -34,7 +35,10 @@ class LocalSwimSessionsRepository(
                 val encoded = file.readText()
                 ensureActive()
                 try {
-                    val decoded = Json.decodeFromString<List<com.alexallafi.app.data.local_storage.SwimSession>>(encoded)
+                    val decoded =
+                        Json.decodeFromString<List<com.alexallafi.app.data.local_storage.SwimSession>>(
+                            encoded
+                        )
                     val decodedDomain = decoded.toDomainModel()
                     _sessionsFlow.update { decodedDomain }
                     Result.success(decodedDomain)
@@ -49,20 +53,31 @@ class LocalSwimSessionsRepository(
 
     override fun observeAll(): Flow<List<SwimSession>> = _sessionsFlow
 
-    override suspend fun markAsCompleted(swimSession: SwimSession) {
+    override suspend fun toggleCompleted(swimSession: SwimSession) {
 
         withContext(ioDispatcher) {
 
             val allSessions = getAll().getOrElse { return@withContext }.toMutableList()
 
-            val sessionIndex = allSessions.indexOfFirst { it.weekPriority == swimSession.weekPriority }
+            val sessionIndex =
+                allSessions.indexOfFirst { it.id == swimSession.id }
             if (sessionIndex != -1) {
-                val updatedSession = allSessions[sessionIndex].copy(completed = true)
+                val updatedSession = when {
+                    allSessions[sessionIndex].completed -> allSessions[sessionIndex].copy(completed = false, completedAt = null)
+                    else -> allSessions[sessionIndex].copy(completed = true, completedAt = OffsetDateTime.now())
+                }
                 allSessions[sessionIndex] = updatedSession
-                _sessionsFlow.emit(allSessions)
                 addAll(allSessions)
+                _sessionsFlow.emit(allSessions)
             }
         }
+    }
+
+    override suspend fun toggleCompleted(id: String) {
+        toggleCompleted(
+            getAll()
+                .getOrThrow()
+                .first { it.id == id })
     }
 
     override suspend fun addAll(swimSessions: List<SwimSession>) {
@@ -95,7 +110,7 @@ class LocalSwimSessionsRepository(
             getAll()
                 .getOrElse { return@withContext 0 }
                 .filter { it.week == swimmingWeek && it.completed }
-                .sumOf { it.swimSets.sumOf { set -> set.meters * set.count }  }
+                .sumOf { it.swimSets.sumOf { set -> set.meters * set.count } }
         }
     }
 

@@ -46,47 +46,38 @@ class ViewItemMapperTests {
                 endText = "[600/${600 + 1200 + 1800}] Completed",
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                isCompleted = true,
+                ,
                 title = "Day 1",
                 message = testMapper.sessionsCompletedMessaged(fakeSessions.first()),
-                swimRounds = "",
-                isExpanded = false
+                isCompleted = true
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                isCompleted = false,
+                ,
                 title = "Day 2",
-                message = testMapper.sessionsCompletedMessaged(fakeSessions[1]),
-                swimRounds = "",
-                isExpanded = false
+                message = testMapper.sessionsCompletedMessaged(fakeSessions[1])
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                isCompleted = false,
+                ,
                 title = "Day 3",
-                message = testMapper.sessionsCompletedMessaged(fakeSessions[2]),
-                swimRounds = "",
-                isExpanded = false
+                message = testMapper.sessionsCompletedMessaged(fakeSessions[2])
             ),
             SwimSessionListItem.HeaderItem(
                 startText = "Week 2",
                 endText = "[0/2400] Completed"
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                isCompleted = false,
+                ,
                 title = "Day 1",
-                message = testMapper.sessionsCompletedMessaged(fakeSessions[3]),
-                swimRounds = "",
-                isExpanded = false
+                message = testMapper.sessionsCompletedMessaged(fakeSessions[3])
             ),
             SwimSessionListItem.HeaderItem(
                 startText = "Week 3",
                 endText = "[0/3000] Completed"
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                isCompleted = false,
+                ,
                 title = "Day 1",
-                message = testMapper.sessionsCompletedMessaged(fakeSessions[4]),
-                swimRounds = "",
-                isExpanded = false
+                message = testMapper.sessionsCompletedMessaged(fakeSessions[4])
             )
         )
 

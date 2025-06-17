@@ -5,10 +5,10 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.alexallafi.app.domain.InitialDataPopulator
 import com.alexallafi.app.domain.SwimSessionsRepository
+import com.alexallafi.app.presentation.SwimSessionListItem.SwimSessionViewItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -64,7 +64,20 @@ class SessionsViewModel(
                     }
                 }
             }
-            is SwimSessionAction.SetAsCompleted -> TODO()
+            is SwimSessionAction.CompletedToggled -> {
+
+                val selectedSession = action.sessionViewItem as? SwimSessionViewItem ?: return
+
+                viewModelScope.launch { sessionsRepository.toggleCompleted(selectedSession.id) }
+
+//                _sessionsViewItems.update { currentList ->
+//                    currentList.map { item ->
+//                        if (item is SwimSessionListItem.SwimSessionViewItem && item == action.sessionViewItem) {
+//                            item.copy(isCompleted = !item.isCompleted)
+//                        } else item
+//                    }
+//                }
+            }
         }
     }
 }

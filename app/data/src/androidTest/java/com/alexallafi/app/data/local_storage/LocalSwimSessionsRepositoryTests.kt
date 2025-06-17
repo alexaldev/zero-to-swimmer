@@ -195,7 +195,7 @@ class LocalSwimSessionsRepositoryTests {
     }
 
     @Test
-    fun markAsCompleted() = runTest {
+    fun toggleCompleted() = runTest {
         val fakeSwimSets = buildList<SwimmingSet> {
             add(
                 SwimmingSet(
@@ -258,7 +258,7 @@ class LocalSwimSessionsRepositoryTests {
             )
         }
         testRepository.addAll(fakeSessions)
-        testRepository.markAsCompleted(fakeSecondSession)
+        testRepository.toggleCompleted(fakeSecondSession)
 
         val testSecondStoredSession =
             testRepository.getAll().getOrThrow().first { it.weekPriority == fakeSecondSession.weekPriority }

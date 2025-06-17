@@ -1,7 +1,6 @@
 package com.alexallafi.app.data.local_storage
 
 import kotlinx.serialization.Serializable
-import java.time.OffsetDateTime
 
 @Serializable
 data class SwimSession(

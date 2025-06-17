@@ -3,6 +3,7 @@ package com.alexallafi.app.presentation
 sealed interface SwimSessionListItem {
 
     data class SwimSessionViewItem(
+        val id: String,
         val title: String = "",
         val message: String = "",
         val isCompleted: Boolean = false,

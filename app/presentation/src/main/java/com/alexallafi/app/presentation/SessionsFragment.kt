@@ -5,15 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.presentation.databinding.FragmentSwimSessionsBinding
-import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
@@ -31,7 +25,8 @@ class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
 
         adapter = SwimSessionsViewAdapter(
             collapseListener = {viewModel.onAction(SwimSessionAction.CollapseSession(it))},
-            expandListener = {viewModel.onAction(SwimSessionAction.ExpandSession(it))}
+            expandListener = {viewModel.onAction(SwimSessionAction.ExpandSession(it))},
+            onCompletedToggleListener = {viewModel.onAction(SwimSessionAction.CompletedToggled(it))}
         )
 
         return super.onCreateView(inflater, container, savedInstanceState)
