@@ -21,10 +21,10 @@ class ViewItemsMapper(
             .map {
                 buildList<SwimSessionListItem> {
                     add(
-                        SwimSessionListItem.HeaderItem(
+                        SwimSessionListItem.WeekHeaderItem(
                             startText = "${stringResourcesProvider.getString(R.string.week)} ${it.key}",
-                            endText = "[${swimSessionsRepository.completedMetersForWeek(SwimmingWeek(it.key))}/" +
-                                    "${swimSessionsRepository.totalMetersForWeek(SwimmingWeek(it.key))}] " +
+                            endText = "[${swimSessionsRepository.completedMetersForWeek(SwimmingWeek(it.key))}m/" +
+                                    "${swimSessionsRepository.totalMetersForWeek(SwimmingWeek(it.key))}m] " +
                                     stringResourcesProvider.getString(R.string.completed)
                         )
                     )

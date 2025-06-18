@@ -33,7 +33,7 @@ class SwimSessionsViewAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when(val sessionViewItem = sessionItems[position]) {
-            is SwimSessionListItem.HeaderItem -> VIEW_TYPE_HEADER
+            is SwimSessionListItem.WeekHeaderItem -> VIEW_TYPE_HEADER
             is SwimSessionListItem.SwimSessionViewItem -> {
                 if (sessionViewItem.isExpanded) VIEW_TYPE_SESSION_EXPANDED
                 else VIEW_TYPE_SESSION_COLLAPSED
@@ -61,7 +61,7 @@ class SwimSessionsViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         when(holder) {
-            is HeaderViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.HeaderItem)
+            is HeaderViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.WeekHeaderItem)
             is CollapsedSessionViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.SwimSessionViewItem)
             is ExpandedSessionViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.SwimSessionViewItem)
         }
@@ -72,7 +72,7 @@ class SwimSessionsViewAdapter(
     inner class HeaderViewHolder(
         private val viewBinding: CellViewItemWeekHeaderBinding
     ) : ViewHolder(viewBinding.root) {
-        fun bind(item: SwimSessionListItem.HeaderItem) {
+        fun bind(item: SwimSessionListItem.WeekHeaderItem) {
             viewBinding.weekIdView.text = item.startText
             viewBinding.completedTextView.text = item.endText
         }

@@ -11,7 +11,7 @@ sealed interface SwimSessionListItem {
         val swimRounds: String = ""
     ): SwimSessionListItem
 
-    data class HeaderItem(
+    data class WeekHeaderItem(
         val startText: String = "",
         val endText: String = ""
     ): SwimSessionListItem

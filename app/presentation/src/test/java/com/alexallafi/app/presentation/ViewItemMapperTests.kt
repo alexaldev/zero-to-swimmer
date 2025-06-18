@@ -41,7 +41,7 @@ class ViewItemMapperTests {
 
         // Header for Week 1, week 1 sessions, header for week 2, etc.
         val expected = listOf<SwimSessionListItem>(
-            SwimSessionListItem.HeaderItem(
+            SwimSessionListItem.WeekHeaderItem(
                 startText = "Week 1",
                 endText = "[600/${600 + 1200 + 1800}] Completed",
             ),
@@ -61,7 +61,7 @@ class ViewItemMapperTests {
                 title = "Day 3",
                 message = testMapper.sessionsCompletedMessaged(fakeSessions[2])
             ),
-            SwimSessionListItem.HeaderItem(
+            SwimSessionListItem.WeekHeaderItem(
                 startText = "Week 2",
                 endText = "[0/2400] Completed"
             ),
@@ -70,7 +70,7 @@ class ViewItemMapperTests {
                 title = "Day 1",
                 message = testMapper.sessionsCompletedMessaged(fakeSessions[3])
             ),
-            SwimSessionListItem.HeaderItem(
+            SwimSessionListItem.WeekHeaderItem(
                 startText = "Week 3",
                 endText = "[0/3000] Completed"
             ),
@@ -91,24 +91,24 @@ class ViewItemMapperTests {
 
         val fakeSessions = fakeSwimSessionsValidSets()
 
-        val firstWeekExpectedHeaderItem = SwimSessionListItem.HeaderItem(
+        val firstWeekExpectedWeekHeaderItem = SwimSessionListItem.WeekHeaderItem(
             startText = "Week 1",
             endText = "[600/${600 + 1200 + 1800}] Completed"
         )
-        val secondWeekExpectedHeaderItem = SwimSessionListItem.HeaderItem(
+        val secondWeekExpectedWeekHeaderItem = SwimSessionListItem.WeekHeaderItem(
             startText = "Week 2",
             endText = "[0/2400] Completed"
         )
-        val thirdWeekExpectedHeaderItem = SwimSessionListItem.HeaderItem(
+        val thirdWeekExpectedWeekHeaderItem = SwimSessionListItem.WeekHeaderItem(
             startText = "Week 3",
             endText = "[0/3000] Completed"
         )
 
         val testResult = testMapper.mapToViewItems(fakeSessions)
 
-        assertThat(testResult).contains(firstWeekExpectedHeaderItem)
-        assertThat(testResult).contains(secondWeekExpectedHeaderItem)
-        assertThat(testResult).contains(thirdWeekExpectedHeaderItem)
+        assertThat(testResult).contains(firstWeekExpectedWeekHeaderItem)
+        assertThat(testResult).contains(secondWeekExpectedWeekHeaderItem)
+        assertThat(testResult).contains(thirdWeekExpectedWeekHeaderItem)
     }
 
     private fun fakeSwimSessionsValidSets(): List<SwimSession> {

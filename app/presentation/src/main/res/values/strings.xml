@@ -4,7 +4,7 @@
     <string name="week">Week</string>
     <string name="completed">Completed</string>
     <string name="metersUnit">m</string>
-    <string name="meters_total">%s total</string>
+    <string name="meters_total">%sm total</string>
     <string name="swim_round_description">%d x %d, rest for %d breaths between %d</string>
     <string name="completed_at">Completed at %s</string>
 </resources>
