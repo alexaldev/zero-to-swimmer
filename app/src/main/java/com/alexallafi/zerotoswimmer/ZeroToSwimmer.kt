@@ -1,6 +1,7 @@
 package com.alexallafi.zerotoswimmer
 
 import android.app.Application
+import android.util.Log.e
 import com.alexallafi.app.data.di.coroutinesModule
 import com.alexallafi.app.data.di.localStorageModule
 import com.alexallafi.app.presentation.presentationModule
@@ -22,7 +23,7 @@ class ZeroToSwimmer : Application() {
     companion object {
         fun koinModules(): List<Module> {
             return listOf(
-                localStorageModule, presentationModule, coroutinesModule
+                localStorageModule, presentationModule, coroutinesModule, homeModule
             )
         }
     }

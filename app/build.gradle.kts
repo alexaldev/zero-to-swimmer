@@ -48,6 +48,7 @@ dependencies {
     implementation(projects.app.domain)
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+    implementation(libs.splashscreen)
     implementation(libs.koin.test)
 
     implementation(libs.androidx.core.ktx)

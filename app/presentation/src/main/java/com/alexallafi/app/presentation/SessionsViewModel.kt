@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 
 class SessionsViewModel(
     private val sessionsRepository: SwimSessionsRepository,
-    private val viewItemsMapper: ViewItemsMapper,
-    private val initialDataPopulator: InitialDataPopulator
+    private val viewItemsMapper: ViewItemsMapper
 ) : ViewModel() {
 
     private val _sessionsViewItems: MutableStateFlow<List<SwimSessionListItem>> = MutableStateFlow(
@@ -32,13 +31,6 @@ class SessionsViewModel(
             }
             .launchIn(viewModelScope)
 
-        viewModelScope.launch { populateDataIfNeeded() }
-    }
-
-    private suspend fun populateDataIfNeeded() {
-        if (sessionsRepository.getAll().isFailure) {
-            sessionsRepository.addAll(initialDataPopulator.createSessions())
-        }
     }
 
     fun onAction(action: SwimSessionAction) {
@@ -69,14 +61,6 @@ class SessionsViewModel(
                 val selectedSession = action.sessionViewItem as? SwimSessionViewItem ?: return
 
                 viewModelScope.launch { sessionsRepository.toggleCompleted(selectedSession.id) }
-
-//                _sessionsViewItems.update { currentList ->
-//                    currentList.map { item ->
-//                        if (item is SwimSessionListItem.SwimSessionViewItem && item == action.sessionViewItem) {
-//                            item.copy(isCompleted = !item.isCompleted)
-//                        } else item
-//                    }
-//                }
             }
         }
     }

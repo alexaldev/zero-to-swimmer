@@ -26,7 +26,7 @@ turbine = "1.1.0"
 composeUiTestManifest = "1.6.8"
 coreKtxVersion = "1.6.1"
 viewBindingDelegate = "1.5.9"
-toolchainResolver = "1.0.0"
+splashscreen = "1.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +44,7 @@ koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin"}
 viewBindingDelegate = { module = "com.github.kirich1409:viewbindingpropertydelegate-noreflection", version.ref = "viewBindingDelegate"}
+splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen"}
 
 # Testing
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }

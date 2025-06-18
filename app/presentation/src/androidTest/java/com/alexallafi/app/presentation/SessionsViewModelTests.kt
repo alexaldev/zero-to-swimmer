@@ -11,7 +11,6 @@ class SessionsViewModelTests {
     private lateinit var testViewModel: SessionsViewModel
     private val mockRepository: SwimSessionsRepository = mockk()
     private val mockViewItemsMapper: ViewItemsMapper = mockk()
-    private val fakeInitialDataPopulator = FakeInitialDataPopulator()
 
     @Test
     fun onEmptyInitialDataPopulatorGetsCalled() = runTest {
