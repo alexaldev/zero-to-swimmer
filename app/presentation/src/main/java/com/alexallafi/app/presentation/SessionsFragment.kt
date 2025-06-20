@@ -10,7 +10,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alexallafi.app.presentation.databinding.FragmentSwimSessionsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
+class SessionsFragment : Fragment(R.layout.fragment_swim_sessions) {
 
     private val viewBinding by viewBinding(FragmentSwimSessionsBinding::bind)
     private val viewModel: SessionsViewModel by viewModel()
@@ -25,9 +25,10 @@ class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
 
         adapter = SwimSessionsViewAdapter(
             requireContext(),
-            collapseListener = {viewModel.onAction(SwimSessionAction.CollapseSession(it))},
-            expandListener = {viewModel.onAction(SwimSessionAction.ExpandSession(it))},
-            onCompletedToggleListener = {viewModel.onAction(SwimSessionAction.CompletedToggled(it))}
+            collapseListener = { viewModel.onAction(SwimSessionAction.CollapseSession(it)) },
+            expandListener = { viewModel.onAction(SwimSessionAction.ExpandSession(it)) },
+            onCompletedToggleListener = { viewModel.onAction(SwimSessionAction.CompletedToggled(it)) },
+            scrollToNextAvailableListener = { viewBinding.sessionsList.scrollToPosition(8) }
         )
 
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -36,7 +37,8 @@ class SessionsFragment: Fragment(R.layout.fragment_swim_sessions) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.sessionsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        viewBinding.sessionsList.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewBinding.sessionsList.adapter = this.adapter
 
         viewModel.sessionViewItems.observe(viewLifecycleOwner) {

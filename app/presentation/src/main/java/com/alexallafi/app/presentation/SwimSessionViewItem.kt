@@ -2,6 +2,11 @@ package com.alexallafi.app.presentation
 
 sealed interface SwimSessionListItem {
 
+    data class ProgressOverviewViewItem(
+        val totalCompleted: String,
+        val nextAvailable: String
+    ): SwimSessionListItem
+
     data class SwimSessionViewItem(
         val id: String,
         val title: String = "",

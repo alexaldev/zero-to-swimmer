@@ -23,7 +23,7 @@ class ViewItemMapperTests {
     @BeforeEach
     fun setup() {
 
-        testMapper = ViewItemsMapper(stringResourcesProvider, mockRepository)
+        testMapper = ViewItemsMapper(stringResourcesProvider, mockRepository, includeOverview = false)
 
         coEvery { mockRepository.completedMetersForWeek(SwimmingWeek(1)) } returns 600
         coEvery { mockRepository.totalMetersForWeek(SwimmingWeek(1)) } returns 3600
@@ -43,39 +43,39 @@ class ViewItemMapperTests {
         val expected = listOf<SwimSessionListItem>(
             SwimSessionListItem.WeekHeaderItem(
                 startText = "Week 1",
-                endText = "[600/${600 + 1200 + 1800}] Completed",
+                endText = "[600m/${600 + 1200 + 1800}m] Completed",
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                ,
+                id = "w1d1",
                 title = "Day 1",
                 message = testMapper.sessionsCompletedMessaged(fakeSessions.first()),
                 isCompleted = true
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                ,
+                id = "w1d2",
                 title = "Day 2",
                 message = testMapper.sessionsCompletedMessaged(fakeSessions[1])
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                ,
+                id = "w1d3",
                 title = "Day 3",
                 message = testMapper.sessionsCompletedMessaged(fakeSessions[2])
             ),
             SwimSessionListItem.WeekHeaderItem(
                 startText = "Week 2",
-                endText = "[0/2400] Completed"
+                endText = "[0m/2400m] Completed"
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                ,
+                id = "w2d1",
                 title = "Day 1",
                 message = testMapper.sessionsCompletedMessaged(fakeSessions[3])
             ),
             SwimSessionListItem.WeekHeaderItem(
                 startText = "Week 3",
-                endText = "[0/3000] Completed"
+                endText = "[0m/3000m] Completed"
             ),
             SwimSessionListItem.SwimSessionViewItem(
-                ,
+                id = "w3d1",
                 title = "Day 1",
                 message = testMapper.sessionsCompletedMessaged(fakeSessions[4])
             )
@@ -118,7 +118,7 @@ class ViewItemMapperTests {
                 completed = true,
                 week = SwimmingWeek.FIRST,
                 swimSets = buildList { repeat(1) { add(fakeSwimSet())} },
-                completedAt = null
+                completedAt = OffsetDateTime.now()
             ),
             SwimSession(
                 weekPriority = 2,

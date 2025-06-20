@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.alexallafi.app.presentation.databinding.CellViewItemCollapsedBinding
 import com.alexallafi.app.presentation.databinding.CellViewItemExpandedBinding
+import com.alexallafi.app.presentation.databinding.CellViewItemOverviewBinding
 import com.alexallafi.app.presentation.databinding.CellViewItemWeekHeaderBinding
 
 class SwimSessionsViewAdapter(
@@ -16,11 +17,13 @@ class SwimSessionsViewAdapter(
     private val sessionItems: MutableList<SwimSessionListItem> = mutableListOf(),
     private val expandListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
     private val collapseListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
-    private val onCompletedToggleListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit
+    private val onCompletedToggleListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
+    private val scrollToNextAvailableListener: () -> Unit
 ): RecyclerView.Adapter<ViewHolder>() {
 
     companion object {
-        const val VIEW_TYPE_HEADER = 420
+        const val VIEW_TYPE_OVERVIEW = 419
+        const val VIEW_TYPE_WEEK_HEADER = 420
         const val VIEW_TYPE_SESSION_COLLAPSED = 421
         const val VIEW_TYPE_SESSION_EXPANDED = 422
     }
@@ -33,11 +36,12 @@ class SwimSessionsViewAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when(val sessionViewItem = sessionItems[position]) {
-            is SwimSessionListItem.WeekHeaderItem -> VIEW_TYPE_HEADER
+            is SwimSessionListItem.WeekHeaderItem -> VIEW_TYPE_WEEK_HEADER
             is SwimSessionListItem.SwimSessionViewItem -> {
                 if (sessionViewItem.isExpanded) VIEW_TYPE_SESSION_EXPANDED
                 else VIEW_TYPE_SESSION_COLLAPSED
             }
+            is SwimSessionListItem.ProgressOverviewViewItem -> VIEW_TYPE_OVERVIEW
         }
     }
 
@@ -45,7 +49,7 @@ class SwimSessionsViewAdapter(
 
         val layoutInflater = LayoutInflater.from(parent.context)
         return when(viewType) {
-            VIEW_TYPE_HEADER -> HeaderViewHolder(
+            VIEW_TYPE_WEEK_HEADER -> HeaderViewHolder(
                 CellViewItemWeekHeaderBinding.inflate(layoutInflater, parent, false)
             )
             VIEW_TYPE_SESSION_EXPANDED -> ExpandedSessionViewHolder(
@@ -53,6 +57,9 @@ class SwimSessionsViewAdapter(
             )
             VIEW_TYPE_SESSION_COLLAPSED -> CollapsedSessionViewHolder(
                 CellViewItemCollapsedBinding.inflate(layoutInflater, parent, false)
+            )
+            VIEW_TYPE_OVERVIEW -> OverviewViewHolder(
+                CellViewItemOverviewBinding.inflate(layoutInflater, parent, false)
             )
             else -> throw IllegalArgumentException("Unknown viewType: $viewType")
         }
@@ -64,6 +71,7 @@ class SwimSessionsViewAdapter(
             is HeaderViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.WeekHeaderItem)
             is CollapsedSessionViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.SwimSessionViewItem)
             is ExpandedSessionViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.SwimSessionViewItem)
+            is OverviewViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.ProgressOverviewViewItem)
         }
     }
 
@@ -117,6 +125,16 @@ class SwimSessionsViewAdapter(
                 this.setsView.text = item.swimRounds
                 collapseIcon.setOnClickListener { collapseListener(item) }
             }
+        }
+    }
+
+    inner class OverviewViewHolder(
+        private val viewBinding: CellViewItemOverviewBinding
+    ): ViewHolder(viewBinding.root) {
+        fun bind(item: SwimSessionListItem.ProgressOverviewViewItem) {
+            viewBinding.totalCompletedValue.text = item.totalCompleted
+            viewBinding.nextAvailableValue.text = item.nextAvailable
+            viewBinding.scrollToAvailable.setOnClickListener { scrollToNextAvailableListener() }
         }
     }
 }

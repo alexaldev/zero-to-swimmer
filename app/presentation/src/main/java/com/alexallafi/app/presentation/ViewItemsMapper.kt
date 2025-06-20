@@ -8,31 +8,50 @@ import com.alexallafi.app.domain.SwimmingWeek
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.collections.flatten
 
 class ViewItemsMapper(
     private val stringResourcesProvider: StringResourcesProvider,
-    private val swimSessionsRepository: SwimSessionsRepository
+    private val swimSessionsRepository: SwimSessionsRepository,
+    private val includeOverview: Boolean = true
 ) {
 
     suspend fun mapToViewItems(swimSessions: List<SwimSession>): List<SwimSessionListItem> {
 
-        return swimSessions
-            .groupBy { it.week.value }
-            .map {
-                buildList<SwimSessionListItem> {
-                    add(
-                        SwimSessionListItem.WeekHeaderItem(
-                            startText = "${stringResourcesProvider.getString(R.string.week)} ${it.key}",
-                            endText = "[${swimSessionsRepository.completedMetersForWeek(SwimmingWeek(it.key))}m/" +
-                                    "${swimSessionsRepository.totalMetersForWeek(SwimmingWeek(it.key))}m] " +
-                                    stringResourcesProvider.getString(R.string.completed)
-                        )
-                    )
-                    it.value.map { it.toSwimSessionViewItem() }.forEach { sessionViewItem -> add(sessionViewItem) }
-                }
-            }
-            .flatten()
+        val result = mutableListOf<SwimSessionListItem>()
 
+        if (includeOverview) getOverview(swimSessions)?.let { result += it }
+
+        swimSessions
+            .groupBy { it.week.value }
+            .map { session ->
+
+                result += SwimSessionListItem.WeekHeaderItem(
+                    startText = "${stringResourcesProvider.getString(R.string.week)} ${session.key}",
+                    endText = "[${swimSessionsRepository.completedMetersForWeek(SwimmingWeek(session.key))}m/" +
+                            "${swimSessionsRepository.totalMetersForWeek(SwimmingWeek(session.key))}m] " +
+                            stringResourcesProvider.getString(R.string.completed)
+                )
+
+                session.value.map { it.toSwimSessionViewItem() }.forEach { sessionViewItem -> result += sessionViewItem }
+            }
+
+        return result
+    }
+
+    private fun getOverview(sessions: List<SwimSession>): SwimSessionListItem? {
+
+        val allSessions = sessions
+        val completedSessions = allSessions.count { it.completed }
+        val nextAvailable = allSessions.firstOrNull { it.completed.not()  } ?: return null
+
+        val totalCompletedText = "$completedSessions/${allSessions.size}"
+        val nextAvailableText = "Week ${nextAvailable.week.value}, Day ${nextAvailable.weekPriority}"
+
+        return SwimSessionListItem.ProgressOverviewViewItem(
+            totalCompleted = totalCompletedText,
+            nextAvailable = nextAvailableText
+        )
     }
 
     private fun SwimSession.toSwimSessionViewItem(): SwimSessionListItem.SwimSessionViewItem {

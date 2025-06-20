@@ -9,5 +9,6 @@ import org.koin.dsl.module
 val presentationModule = module {
     viewModelOf(::SessionsViewModel)
     singleOf(::AndroidStringProvider) bind StringResourcesProvider::class
-    factoryOf(::ViewItemsMapper)
+    factory { ViewItemsMapper(get(), get(), includeOverview = true) }
+//    factoryOf(::ViewItemsMapper)
 }

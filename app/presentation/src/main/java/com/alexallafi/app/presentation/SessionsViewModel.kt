@@ -33,13 +33,18 @@ class SessionsViewModel(
 
     }
 
+    fun nextAvailableSessionPosition(): Int {
+        return this._sessionsViewItems.value
+            .indexOfFirst { swimSession -> swimSession is SwimSessionViewItem && swimSession.isCompleted.not()  }
+    }
+
     fun onAction(action: SwimSessionAction) {
         when(action) {
             is SwimSessionAction.CollapseSession -> {
 
                 _sessionsViewItems.update { currentList ->
                     currentList.map { item ->
-                        if (item is SwimSessionListItem.SwimSessionViewItem && item == action.sessionViewItem) {
+                        if (item is SwimSessionViewItem && item == action.sessionViewItem) {
                             item.copy(isExpanded = false)
                         } else
                             item
@@ -49,7 +54,7 @@ class SessionsViewModel(
             is SwimSessionAction.ExpandSession -> {
                 _sessionsViewItems.update { currentList ->
                     currentList.map { item ->
-                        if (item is SwimSessionListItem.SwimSessionViewItem && item == action.sessionViewItem) {
+                        if (item is SwimSessionViewItem && item == action.sessionViewItem) {
                             item.copy(isExpanded = true)
                         } else
                             item
@@ -62,6 +67,13 @@ class SessionsViewModel(
 
                 viewModelScope.launch { sessionsRepository.toggleCompleted(selectedSession.id) }
             }
+
+            SwimSessionAction.ScrollToNextAvailable -> TODO()
         }
     }
+}
+
+sealed interface ScreenState {
+    data class SessionsList(val items: List<SwimSessionListItem>): ScreenState
+    data class ScrollToPosition(val position: Int): ScreenState
 }

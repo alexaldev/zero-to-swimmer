@@ -5,6 +5,8 @@
     <string name="completed">Completed</string>
     <string name="metersUnit">m</string>
     <string name="meters_total">%sm total</string>
-    <string name="swim_round_description">%d x %d, rest for %d breaths between %d</string>
+    <string name="swim_round_description">%d x %dm, rest for %d breaths between %dm</string>
     <string name="completed_at">Completed at %s</string>
+    <string name="sessions_completed">Sessions completed</string>
+    <string name="next_available_session">Next available session</string>
 </resources>
