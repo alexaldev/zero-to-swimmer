@@ -28,9 +28,11 @@ class HomeActivity : FragmentActivity() {
         enableEdgeToEdge()
         setContentView(viewBinding.root)
         setupEdgeToEdge()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, SessionsFragment())
-            .commit()
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SessionsFragment())
+                .commit()
+        }
     }
 
     private fun setupSplashScreen() {
