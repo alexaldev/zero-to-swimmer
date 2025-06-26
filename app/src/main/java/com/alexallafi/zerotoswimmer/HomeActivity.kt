@@ -2,6 +2,7 @@ package com.alexallafi.zerotoswimmer
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.core.graphics.Insets
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.commit
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -28,10 +30,21 @@ class HomeActivity : FragmentActivity() {
         enableEdgeToEdge()
         setContentView(viewBinding.root)
         setupEdgeToEdge()
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SessionsFragment())
-                .commit()
+        setupNavigation(savedInstanceState)
+    }
+
+    private fun setupNavigation(savedInstanceState: Bundle?) {
+        viewBinding.navBar.setOnItemReselectedListener { item ->
+            when(item.itemId) {
+                R.id.nav_sessions -> {
+                    if (savedInstanceState == null) {
+                        supportFragmentManager.commit {
+                            replace(R.id.fragment_container, SessionsFragment())
+                        }
+                    }
+                }
+                R.id.nav_settings -> Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
