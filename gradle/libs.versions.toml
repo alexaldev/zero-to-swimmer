@@ -1,4 +1,6 @@
 [versions]
+projectVersionName = "0.1.0"
+projectVersionCode = "1"
 agp = "8.8.0"
 kotlin = "2.0.10"
 activityKtx = "1.9.2"
