@@ -28,7 +28,7 @@ class SessionsFragment : Fragment(R.layout.fragment_swim_sessions) {
             collapseListener = { viewModel.onAction(SwimSessionAction.CollapseSession(it)) },
             expandListener = { viewModel.onAction(SwimSessionAction.ExpandSession(it)) },
             onCompletedToggleListener = { viewModel.onAction(SwimSessionAction.CompletedToggled(it)) },
-            scrollToNextAvailableListener = { viewBinding.sessionsList.scrollToPosition(8) }
+            scrollToNextAvailableListener = { viewBinding.sessionsList.scrollToPosition(viewModel.nextAvailableSessionPosition()) }
         )
 
         return super.onCreateView(inflater, container, savedInstanceState)

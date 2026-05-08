@@ -1,7 +1,7 @@
 [versions]
 projectVersionName = "0.1.0"
 projectVersionCode = "1"
-agp = "8.8.0"
+agp = "8.13.0"
 kotlin = "2.0.10"
 activityKtx = "1.9.2"
 lifecycleViewModel = "2.8.6"
@@ -30,10 +30,12 @@ coreKtxVersion = "1.6.1"
 viewBindingDelegate = "1.5.9"
 splashscreen = "1.0.1"
 constraintlayout = "2.2.1"
+datastoreCoreAndroid = "1.1.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastoreCoreAndroid" }
 androidx-lifecycle_viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewModel"}
 androidx-lifecycle_livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLiveData"}
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
@@ -59,6 +61,7 @@ assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assert
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

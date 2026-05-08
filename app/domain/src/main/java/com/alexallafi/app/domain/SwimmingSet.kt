@@ -6,5 +6,5 @@ package com.alexallafi.app.domain
 data class SwimmingSet(
     val meters: Int,
     val count: Int,
-    val restBreathsCount: Int
+    val restBreathsCount: Int,
 )
