@@ -5,13 +5,16 @@ plugins {
 
 android {
     namespace = "com.alexallafi.zerotoswimmer"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.alexallafi.zerotoswimmer"
         minSdk = 26
         targetSdk = 35
-        versionCode = libs.versions.projectVersionCode.get().toInt()
+        versionCode =
+            libs.versions.projectVersionCode
+                .get()
+                .toInt()
         versionName = libs.versions.projectVersionName.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -22,7 +25,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
