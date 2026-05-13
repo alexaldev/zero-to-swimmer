@@ -67,16 +67,19 @@ class ViewItemsMapper(
 
         return SwimSessionListItem.SwimSessionViewItem(
             id = session.id,
-            title = "${stringResourcesProvider.getString(
-                R.string.day,
-            )} ${((session.weekPriority - 1) % (SwimSession.AVAILABLE_WEEK_PRIORITIES.last)) + 1}",
+            title = titleFor(session),
             message = sessionsCompletedMessaged(session),
             isCompleted = session.completed,
             swimRounds = mapSwimRoundsFor(session.swimSets, poolSize),
         )
     }
 
-    private fun mapSwimRoundsFor(
+    fun titleFor(session: SwimSession): String =
+        "${stringResourcesProvider.getString(
+            R.string.day,
+        )} ${((session.weekPriority - 1) % (SwimSession.AVAILABLE_WEEK_PRIORITIES.last)) + 1}"
+
+    fun mapSwimRoundsFor(
         sets: List<SwimmingSet>,
         poolSize: PoolSize,
     ): String {

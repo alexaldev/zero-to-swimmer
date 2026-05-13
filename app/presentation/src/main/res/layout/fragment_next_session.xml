@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     tools:text="Week 1 - Session 1\n4 x 100m, 4 x 50m, 4 x 25m" />
 
             </LinearLayout>
