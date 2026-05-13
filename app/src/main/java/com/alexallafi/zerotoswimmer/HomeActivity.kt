@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeActivity : FragmentActivity() {
-
     private val viewModel: HomeViewModel by viewModel()
     private val viewBinding by viewBinding { ActivityHomeBinding.inflate(layoutInflater) }
 
@@ -34,18 +33,23 @@ class HomeActivity : FragmentActivity() {
     }
 
     private fun setupNavigation(savedInstanceState: Bundle?) {
-        viewBinding.navBar.setOnItemReselectedListener { item ->
-            when(item.itemId) {
-                R.id.nav_sessions -> {
+        viewBinding.navBar.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_sessions_list -> {
                     if (savedInstanceState == null) {
                         supportFragmentManager.commit {
                             replace(R.id.fragment_container, SessionsFragment())
                         }
                     }
                 }
-                R.id.nav_settings -> Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
+
+                R.id.nav_settings -> {
+                    Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
+                }
             }
+            true
         }
+        viewBinding.navBar.selectedItemId = R.id.nav_sessions_list
     }
 
     private fun setupSplashScreen() {
@@ -65,7 +69,7 @@ class HomeActivity : FragmentActivity() {
     private fun setupEdgeToEdge() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         ViewCompat.setOnApplyWindowInsetsListener(
-            findViewById<View>(android.R.id.content)
+            findViewById<View>(android.R.id.content),
         ) { v: View, windowInsets: WindowInsetsCompat ->
             val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets paddings to the view.
@@ -73,5 +77,4 @@ class HomeActivity : FragmentActivity() {
             WindowInsetsCompat.CONSUMED
         }
     }
-
 }
