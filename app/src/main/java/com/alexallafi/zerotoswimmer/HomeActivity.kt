@@ -15,6 +15,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alexallafi.app.presentation.SessionsFragment
+import com.alexallafi.app.presentation.next_session.NextSessionFragment
 import com.alexallafi.zerotoswimmer.databinding.ActivityHomeBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -45,6 +46,14 @@ class HomeActivity : FragmentActivity() {
 
                 R.id.nav_settings -> {
                     Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
+                }
+
+                R.id.nav_next_sessions -> {
+                    if (savedInstanceState == null) {
+                        supportFragmentManager.commit {
+                            replace(R.id.fragment_container, NextSessionFragment())
+                        }
+                    }
                 }
             }
             true
