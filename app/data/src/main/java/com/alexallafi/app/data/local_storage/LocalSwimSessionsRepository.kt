@@ -10,25 +10,24 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.time.OffsetDateTime
 
 class LocalSwimSessionsRepository(
     private val context: Context,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
 ) : SwimSessionsRepository {
-
-    private val _sessionsFlow = MutableStateFlow<List<SwimSession>>(emptyList())
+    private val sessionsFlow = MutableStateFlow<List<SwimSession>>(emptyList())
 
     override suspend fun getAll(): Result<List<SwimSession>> {
+//        if (sessionsFlow.value.isNotEmpty()) return Result.success(sessionsFlow.value)
 
         return withContext(ioDispatcher) {
-
             val file = File(context.filesDir, "swimming_sessions.json")
 
             if (file.exists()) {
@@ -37,10 +36,10 @@ class LocalSwimSessionsRepository(
                 try {
                     val decoded =
                         Json.decodeFromString<List<com.alexallafi.app.data.local_storage.SwimSession>>(
-                            encoded
+                            encoded,
                         )
                     val decodedDomain = decoded.toDomainModel()
-                    _sessionsFlow.update { decodedDomain }
+                    sessionsFlow.update { decodedDomain }
                     Result.success(decodedDomain)
                 } catch (e: SerializationException) {
                     Result.failure(e)
@@ -51,24 +50,23 @@ class LocalSwimSessionsRepository(
         }
     }
 
-    override fun observeAll(): Flow<List<SwimSession>> = _sessionsFlow
+    override fun observeAll(): Flow<List<SwimSession>> = sessionsFlow.asStateFlow()
 
     override suspend fun toggleCompleted(swimSession: SwimSession) {
-
         withContext(ioDispatcher) {
-
             val allSessions = getAll().getOrElse { return@withContext }.toMutableList()
 
             val sessionIndex =
                 allSessions.indexOfFirst { it.id == swimSession.id }
             if (sessionIndex != -1) {
-                val updatedSession = when {
-                    allSessions[sessionIndex].completed -> allSessions[sessionIndex].copy(completed = false, completedAt = null)
-                    else -> allSessions[sessionIndex].copy(completed = true, completedAt = OffsetDateTime.now())
-                }
+                val updatedSession =
+                    when {
+                        allSessions[sessionIndex].completed -> allSessions[sessionIndex].copy(completed = false, completedAt = null)
+                        else -> allSessions[sessionIndex].copy(completed = true, completedAt = OffsetDateTime.now())
+                    }
                 allSessions[sessionIndex] = updatedSession
                 addAll(allSessions)
-                _sessionsFlow.emit(allSessions)
+                sessionsFlow.emit(allSessions)
             }
         }
     }
@@ -77,26 +75,24 @@ class LocalSwimSessionsRepository(
         toggleCompleted(
             getAll()
                 .getOrThrow()
-                .first { it.id == id })
+                .first { it.id == id },
+        )
     }
 
     override suspend fun addAll(swimSessions: List<SwimSession>) {
-
         withContext(ioDispatcher) {
-
             val file = File(context.filesDir, "swimming_sessions.json")
 
             val sessionsEncoded = Json.encodeToString(swimSessions.toDataModel())
 
             file.writeText(sessionsEncoded).also {
-                _sessionsFlow.update { swimSessions }
+                sessionsFlow.update { swimSessions }
             }
         }
     }
 
     override suspend fun totalMetersForWeek(swimmingWeek: SwimmingWeek): Int {
         return withContext(ioDispatcher) {
-
             getAll()
                 .getOrElse { return@withContext 0 }
                 .filter { it.week == swimmingWeek }
@@ -105,7 +101,6 @@ class LocalSwimSessionsRepository(
     }
 
     override suspend fun completedMetersForWeek(swimmingWeek: SwimmingWeek): Int {
-
         return withContext(ioDispatcher) {
             getAll()
                 .getOrElse { return@withContext 0 }
@@ -114,14 +109,13 @@ class LocalSwimSessionsRepository(
         }
     }
 
-    override suspend fun isWeekCompleted(swimmingWeek: SwimmingWeek): Boolean {
-        return withContext(ioDispatcher) {
+    override suspend fun isWeekCompleted(swimmingWeek: SwimmingWeek): Boolean =
+        withContext(ioDispatcher) {
             getAll()
                 .getOrThrow()
                 .filter { it.week == swimmingWeek }
                 .all { it.completed }
         }
-    }
 
     override suspend fun numberOfWeeks(): Int {
         return withContext(ioDispatcher) {
@@ -129,5 +123,9 @@ class LocalSwimSessionsRepository(
                 .getOrElse { return@withContext 0 }
                 .maxOf { it.week.value }
         }
+    }
+
+    override suspend fun getById(id: String): SwimSession? {
+        return getAll().getOrElse { return null }.firstOrNull { it.id == id }
     }
 }

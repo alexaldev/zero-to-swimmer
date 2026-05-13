@@ -23,4 +23,15 @@ class PrefsConfigurationRepository(
         withContext(ioDispatcher) {
             PoolSize.fromInt(sessionPrefs.getInt("poolSize", 50))
         }
+
+    override suspend fun setFavoriteSession(id: String) {
+        withContext(ioDispatcher) {
+            sessionPrefs.edit { putString("favoriteSession", id) }
+        }
+    }
+
+    override suspend fun getFavoriteSessionId(): String? =
+        withContext(ioDispatcher) {
+            sessionPrefs.getString("favoriteSession", null)
+        }
 }
