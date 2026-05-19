@@ -1,6 +1,5 @@
 package com.alexallafi.app.presentation.nextSession
 
-import android.R.attr.text
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment

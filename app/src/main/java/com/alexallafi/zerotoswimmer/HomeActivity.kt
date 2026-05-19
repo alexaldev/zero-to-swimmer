@@ -37,10 +37,8 @@ class HomeActivity : FragmentActivity() {
         viewBinding.navBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_sessions_list -> {
-                    if (savedInstanceState == null) {
-                        supportFragmentManager.commit {
-                            replace(R.id.fragment_container, SessionsFragment())
-                        }
+                    supportFragmentManager.commit {
+                        replace(R.id.fragment_container, SessionsFragment())
                     }
                 }
 
