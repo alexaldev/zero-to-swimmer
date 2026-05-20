@@ -18,9 +18,9 @@ class SwimSessionsViewAdapter(
     private val expandListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
     private val collapseListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
     private val onCompletedToggleListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
-    private val scrollToNextAvailableListener: () -> Unit
-): RecyclerView.Adapter<ViewHolder>() {
-
+    private val onFavoriteToggleListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
+    private val scrollToNextAvailableListener: () -> Unit,
+) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
         const val VIEW_TYPE_OVERVIEW = 419
         const val VIEW_TYPE_WEEK_HEADER = 420
@@ -34,40 +34,66 @@ class SwimSessionsViewAdapter(
         this.notifyDataSetChanged()
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return when(val sessionViewItem = sessionItems[position]) {
-            is SwimSessionListItem.WeekHeaderItem -> VIEW_TYPE_WEEK_HEADER
-            is SwimSessionListItem.SwimSessionViewItem -> {
-                if (sessionViewItem.isExpanded) VIEW_TYPE_SESSION_EXPANDED
-                else VIEW_TYPE_SESSION_COLLAPSED
+    override fun getItemViewType(position: Int): Int =
+        when (val sessionViewItem = sessionItems[position]) {
+            is SwimSessionListItem.WeekHeaderItem -> {
+                VIEW_TYPE_WEEK_HEADER
             }
-            is SwimSessionListItem.ProgressOverviewViewItem -> VIEW_TYPE_OVERVIEW
+
+            is SwimSessionListItem.SwimSessionViewItem -> {
+                if (sessionViewItem.isExpanded) {
+                    VIEW_TYPE_SESSION_EXPANDED
+                } else {
+                    VIEW_TYPE_SESSION_COLLAPSED
+                }
+            }
+
+            is SwimSessionListItem.ProgressOverviewViewItem -> {
+                VIEW_TYPE_OVERVIEW
+            }
         }
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return when(viewType) {
-            VIEW_TYPE_WEEK_HEADER -> HeaderViewHolder(
-                CellViewItemWeekHeaderBinding.inflate(layoutInflater, parent, false)
-            )
-            VIEW_TYPE_SESSION_EXPANDED -> ExpandedSessionViewHolder(
-                CellViewItemExpandedBinding.inflate(layoutInflater, parent, false)
-            )
-            VIEW_TYPE_SESSION_COLLAPSED -> CollapsedSessionViewHolder(
-                CellViewItemCollapsedBinding.inflate(layoutInflater, parent, false)
-            )
-            VIEW_TYPE_OVERVIEW -> OverviewViewHolder(
-                CellViewItemOverviewBinding.inflate(layoutInflater, parent, false)
-            )
-            else -> throw IllegalArgumentException("Unknown viewType: $viewType")
+        return when (viewType) {
+            VIEW_TYPE_WEEK_HEADER -> {
+                HeaderViewHolder(
+                    CellViewItemWeekHeaderBinding.inflate(layoutInflater, parent, false),
+                )
+            }
+
+            VIEW_TYPE_SESSION_EXPANDED -> {
+                ExpandedSessionViewHolder(
+                    CellViewItemExpandedBinding.inflate(layoutInflater, parent, false),
+                )
+            }
+
+            VIEW_TYPE_SESSION_COLLAPSED -> {
+                CollapsedSessionViewHolder(
+                    CellViewItemCollapsedBinding.inflate(layoutInflater, parent, false),
+                )
+            }
+
+            VIEW_TYPE_OVERVIEW -> {
+                OverviewViewHolder(
+                    CellViewItemOverviewBinding.inflate(layoutInflater, parent, false),
+                )
+            }
+
+            else -> {
+                throw IllegalArgumentException("Unknown viewType: $viewType")
+            }
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        when(holder) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
+        when (holder) {
             is HeaderViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.WeekHeaderItem)
             is CollapsedSessionViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.SwimSessionViewItem)
             is ExpandedSessionViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.SwimSessionViewItem)
@@ -77,8 +103,8 @@ class SwimSessionsViewAdapter(
 
     override fun getItemCount() = this.sessionItems.size
 
-    inner class HeaderViewHolder(
-        private val viewBinding: CellViewItemWeekHeaderBinding
+    class HeaderViewHolder(
+        private val viewBinding: CellViewItemWeekHeaderBinding,
     ) : ViewHolder(viewBinding.root) {
         fun bind(item: SwimSessionListItem.WeekHeaderItem) {
             viewBinding.weekIdView.text = item.startText
@@ -87,8 +113,8 @@ class SwimSessionsViewAdapter(
     }
 
     inner class CollapsedSessionViewHolder(
-        private val viewBinding: CellViewItemCollapsedBinding
-    ): ViewHolder(viewBinding.root) {
+        private val viewBinding: CellViewItemCollapsedBinding,
+    ) : ViewHolder(viewBinding.root) {
         fun bind(item: SwimSessionListItem.SwimSessionViewItem) {
             with(viewBinding) {
                 this.sessionTitle.text = item.title
@@ -100,20 +126,20 @@ class SwimSessionsViewAdapter(
         }
 
         private fun notCompletedUI() {
-            val icon =  R.drawable.pool
+            val icon = R.drawable.pool
             viewBinding.completedIcon.setImageResource(icon)
             viewBinding.root.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white))
         }
 
         private fun completedUI() {
-            val icon =  R.drawable.ic_check
+            val icon = R.drawable.ic_check
             viewBinding.completedIcon.setImageResource(icon)
             viewBinding.root.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey))
         }
     }
 
     inner class ExpandedSessionViewHolder(
-        private val viewBinding: CellViewItemExpandedBinding
+        private val viewBinding: CellViewItemExpandedBinding,
     ) : ViewHolder(viewBinding.root) {
         fun bind(item: SwimSessionListItem.SwimSessionViewItem) {
             with(viewBinding) {
@@ -124,13 +150,15 @@ class SwimSessionsViewAdapter(
                 completedIcon.setOnClickListener { onCompletedToggleListener(item) }
                 this.setsView.text = item.swimRounds
                 collapseIcon.setOnClickListener { collapseListener(item) }
+                favorite.isSelected = item.isFavorite
+                favorite.setOnClickListener { onFavoriteToggleListener(item) }
             }
         }
     }
 
     inner class OverviewViewHolder(
-        private val viewBinding: CellViewItemOverviewBinding
-    ): ViewHolder(viewBinding.root) {
+        private val viewBinding: CellViewItemOverviewBinding,
+    ) : ViewHolder(viewBinding.root) {
         fun bind(item: SwimSessionListItem.ProgressOverviewViewItem) {
             viewBinding.totalCompletedValue.text = item.totalCompleted
             viewBinding.nextAvailableValue.text = item.nextAvailable

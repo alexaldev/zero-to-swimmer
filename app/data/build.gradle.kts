@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.alexallafi.app.data"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -21,7 +21,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.core.ktx)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.datastore.preferences)
 
     testImplementation(libs.junit5.api)
     testImplementation(libs.junit5.engine)

@@ -52,9 +52,6 @@ _Add screenshots here if available._
 
 ## 🛠 Upcoming Features
 
-- 🔍 **Search and Filter**  
-  Easily find sessions by date, pool, or skill level.
-
 - ❤️ **Favorites**  
   Mark your favorite swim sessions for quicker access.
 

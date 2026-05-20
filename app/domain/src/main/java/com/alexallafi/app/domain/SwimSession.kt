@@ -7,9 +7,8 @@ data class SwimSession(
     val completed: Boolean,
     val week: SwimmingWeek,
     val swimSets: List<SwimmingSet>,
-    val completedAt: OffsetDateTime?
+    val completedAt: OffsetDateTime?,
 ) {
-
     val id: String
         get() {
             return "$week-$weekPriority"

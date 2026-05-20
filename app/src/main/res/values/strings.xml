@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ZeroToSwimmer</string>
+    <string name="swim_sessions">Swim sessions</string>
+    <string name="settings">Settings</string>
+    <string name="next_session">Next Session</string>
+    <string name="history">History</string>
 </resources>

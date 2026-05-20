@@ -9,4 +9,6 @@
     <string name="completed_at">Completed at %s</string>
     <string name="sessions_completed">Sessions completed</string>
     <string name="next_available_session">Next available session</string>
+    <string name="favorite_session">⭐ Favorite Session</string>
+    <string name="next_up">🏊 Next Up</string>
 </resources>
