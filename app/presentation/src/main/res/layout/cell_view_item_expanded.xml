@@ -69,5 +69,16 @@
             app:layout_constraintTop_toBottomOf="@id/completed_icon"
             tools:text="4 × 100m freestyle, 2 × 50m backstroke" />
 
+        <ImageView
+            android:id="@+id/favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sl_favorite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sets_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:tint="@color/teal_700"
+             />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

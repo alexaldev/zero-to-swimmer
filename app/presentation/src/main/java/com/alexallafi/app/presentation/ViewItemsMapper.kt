@@ -24,7 +24,10 @@ class ViewItemsMapper(
 ) {
     fun mapToViewItems(swimSessionsFlow: Flow<List<SwimSession>>) = swimSessionsFlow.map { mapToViewItems(it) }
 
-    suspend fun mapToViewItems(swimSessions: List<SwimSession>): List<SwimSessionListItem> {
+    suspend fun mapToViewItems(
+        swimSessions: List<SwimSession>,
+        expandedIds: Set<String> = emptySet(),
+    ): List<SwimSessionListItem> {
         val result = mutableListOf<SwimSessionListItem>()
 
         if (includeOverview) getOverview(swimSessions)?.let { result += it }
@@ -42,7 +45,7 @@ class ViewItemsMapper(
                                 stringResourcesProvider.getString(R.string.completed),
                     )
 
-                session.value.map { toSwimSessionViewItem(it) }.forEach { sessionViewItem -> result += sessionViewItem }
+                session.value.map { toSwimSessionViewItem(it, expandedIds) }.forEach { sessionViewItem -> result += sessionViewItem }
             }
 
         return result
@@ -62,14 +65,20 @@ class ViewItemsMapper(
         )
     }
 
-    suspend fun toSwimSessionViewItem(session: SwimSession): SwimSessionListItem.SwimSessionViewItem {
+    suspend fun toSwimSessionViewItem(
+        session: SwimSession,
+        expandedIds: Set<String> = emptySet(),
+    ): SwimSessionListItem.SwimSessionViewItem {
         val poolSize = configurationRepository.getPoolSize()
+        val favoriteId = configurationRepository.getFavoriteSessionId()
 
         return SwimSessionListItem.SwimSessionViewItem(
             id = session.id,
             title = titleFor(session),
             message = sessionsCompletedMessaged(session),
             isCompleted = session.completed,
+            isFavorite = session.id == favoriteId,
+            isExpanded = expandedIds.contains(session.id),
             swimRounds = mapSwimRoundsFor(session.swimSets, poolSize),
         )
     }
@@ -111,7 +120,6 @@ class ViewItemsMapper(
     @VisibleForTesting
     fun sessionsCompletedMessaged(session: SwimSession): String {
         if (session.completed) {
-            val zonedDateTime = session.completedAt!!.atZoneSameInstant(ZoneId.systemDefault())
             val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
             return stringResourcesProvider.getString(R.string.completed_at).format(session.completedAt!!.format(formatter))
         }

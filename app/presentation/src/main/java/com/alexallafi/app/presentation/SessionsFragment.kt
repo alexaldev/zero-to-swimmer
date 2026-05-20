@@ -11,7 +11,6 @@ import com.alexallafi.app.presentation.databinding.FragmentSwimSessionsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SessionsFragment : Fragment(R.layout.fragment_swim_sessions) {
-
     private val viewBinding by viewBinding(FragmentSwimSessionsBinding::bind)
     private val viewModel: SessionsViewModel by viewModel()
 
@@ -20,30 +19,33 @@ class SessionsFragment : Fragment(R.layout.fragment_swim_sessions) {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
-
-        adapter = SwimSessionsViewAdapter(
-            requireContext(),
-            collapseListener = { viewModel.onAction(SwimSessionAction.CollapseSession(it)) },
-            expandListener = { viewModel.onAction(SwimSessionAction.ExpandSession(it)) },
-            onCompletedToggleListener = { viewModel.onAction(SwimSessionAction.CompletedToggled(it)) },
-            scrollToNextAvailableListener = { viewBinding.sessionsList.scrollToPosition(viewModel.nextAvailableSessionPosition()) }
-        )
+        adapter =
+            SwimSessionsViewAdapter(
+                requireContext(),
+                collapseListener = { viewModel.onAction(SwimSessionAction.CollapseSession(it)) },
+                expandListener = { viewModel.onAction(SwimSessionAction.ExpandSession(it)) },
+                onCompletedToggleListener = { viewModel.onAction(SwimSessionAction.CompletedToggled(it)) },
+                scrollToNextAvailableListener = { viewBinding.sessionsList.scrollToPosition(viewModel.nextAvailableSessionPosition()) },
+                onFavoriteToggleListener = { viewModel.onAction(SwimSessionAction.FavoriteToggled(it)) },
+            )
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding.sessionsList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewBinding.sessionsList.adapter = this.adapter
 
-        viewModel.sessionViewItems.observe(viewLifecycleOwner) {
+        viewModel.sessionsViewItems.observe(viewLifecycleOwner) {
             adapter.updateData(it)
         }
     }
-
 }

@@ -1,35 +1,39 @@
 package com.alexallafi.app.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.presentation.SwimSessionListItem.SwimSessionViewItem
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.measureTime
 
 class SessionsViewModel(
     private val sessionsRepository: SwimSessionsRepository,
     private val viewItemsMapper: ViewItemsMapper,
+    private val configurationRepository: ConfigurationRepository,
 ) : ViewModel() {
     private val _sessionsViewItems: MutableStateFlow<List<SwimSessionListItem>> =
-        MutableStateFlow(
-            emptyList(),
-        )
-    val sessionViewItems = _sessionsViewItems.asLiveData()
+        MutableStateFlow(emptyList())
+    val sessionsViewItems = _sessionsViewItems.asLiveData()
+
+    private val expandedSessionIds = MutableStateFlow<Set<String>>(emptySet())
 
     init {
-
-        sessionsRepository
-            .observeAll()
-            .map { sessions ->
-                _sessionsViewItems.update { viewItemsMapper.mapToViewItems(sessions) }
-            }.launchIn(viewModelScope)
+        combine(
+            sessionsRepository.observeAll(),
+            configurationRepository.observeFavoriteSession(),
+            expandedSessionIds,
+        ) { sessions, _, expandedIds ->
+            viewItemsMapper.mapToViewItems(sessions, expandedIds)
+        }.onEach {
+            _sessionsViewItems.value = it
+        }.launchIn(viewModelScope)
     }
 
     fun nextAvailableSessionPosition(): Int =
@@ -39,37 +43,27 @@ class SessionsViewModel(
     fun onAction(action: SwimSessionAction) {
         when (action) {
             is SwimSessionAction.CollapseSession -> {
-                _sessionsViewItems.update { currentList ->
-                    currentList.map { item ->
-                        if (item is SwimSessionViewItem && item == action.sessionViewItem) {
-                            item.copy(isExpanded = false)
-                        } else {
-                            item
-                        }
-                    }
-                }
+                expandedSessionIds.update { it - action.sessionViewItem.id }
             }
 
             is SwimSessionAction.ExpandSession -> {
-                _sessionsViewItems.update { currentList ->
-                    currentList.map { item ->
-                        if (item is SwimSessionViewItem && item == action.sessionViewItem) {
-                            item.copy(isExpanded = true)
-                        } else {
-                            item
-                        }
-                    }
-                }
+                expandedSessionIds.update { it + action.sessionViewItem.id }
             }
 
             is SwimSessionAction.CompletedToggled -> {
                 val selectedSession = action.sessionViewItem as? SwimSessionViewItem ?: return
-
                 viewModelScope.launch { sessionsRepository.toggleCompleted(selectedSession.id) }
             }
 
             SwimSessionAction.ScrollToNextAvailable -> {
-                TODO()
+                // This is handled by Fragment for now but could be an event
+            }
+
+            is SwimSessionAction.FavoriteToggled -> {
+                val selectedSession = action.sessionViewItem
+                viewModelScope.launch {
+                    configurationRepository.toggleFavoriteSession(selectedSession.id)
+                }
             }
         }
     }

@@ -13,6 +13,7 @@ sealed interface SwimSessionListItem {
         val message: String = "",
         val isCompleted: Boolean = false,
         val isExpanded: Boolean = false,
+        val isFavorite: Boolean = false,
         val swimRounds: String = ""
     ): SwimSessionListItem
 
