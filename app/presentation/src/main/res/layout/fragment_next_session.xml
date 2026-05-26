@@ -67,27 +67,52 @@
             app:cardElevation="5dp"
             app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="16dp">
 
                 <TextView
+                    android:id="@+id/tvNextTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/next_up"
-                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:text="@string/next_available_session"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tvNextSummary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    tools:text="Week 1, Day 1"
+                    app:layout_constraintTop_toBottomOf="@id/tvNextTitle"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
                     android:id="@+id/tvNextDetails"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
-                    tools:text="Week 1 - Session 1\n4 x 100m, 4 x 50m, 4 x 25m" />
+                    tools:text="4 x 100m, 4 x 50m, 4 x 25m"
+                    app:layout_constraintTop_toBottomOf="@id/tvNextSummary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
-            </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMarkCompleted"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/mark_as_completed"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvNextDetails" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>

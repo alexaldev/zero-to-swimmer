@@ -37,5 +37,13 @@ class NextSessionFragment : Fragment(R.layout.fragment_next_session) {
                     viewBinding.tvNextDetails.text = it.sessionSetsText
                 }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel
+                .overviewViewItem
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collect { overview ->
+                    viewBinding.tvNextSummary.text = overview?.nextAvailable ?: "-"
+                }
+        }
     }
 }

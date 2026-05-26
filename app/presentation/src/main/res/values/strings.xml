@@ -11,4 +11,5 @@
     <string name="next_available_session">Next available session</string>
     <string name="favorite_session">⭐ Favorite Session</string>
     <string name="next_up">🏊 Next Up</string>
+    <string name="mark_as_completed">Mark as completed</string>
 </resources>

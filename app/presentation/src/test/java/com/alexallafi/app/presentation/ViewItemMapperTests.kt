@@ -42,6 +42,8 @@ class ViewItemMapperTests {
 
         coEvery { mockSwimSessionsRepository.completedMetersForWeek(SwimmingWeek(3)) } returns 0
         coEvery { mockSwimSessionsRepository.totalMetersForWeek(SwimmingWeek(3)) } returns 3000
+
+        coEvery { mockConfigurationRepository.getFavoriteSessionId() } returns "irrelevant"
     }
 
     @Test

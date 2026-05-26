@@ -9,7 +9,6 @@ import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.domain.SwimmingWeek
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -51,12 +50,11 @@ class ViewItemsMapper(
         return result
     }
 
-    private fun getOverview(sessions: List<SwimSession>): SwimSessionListItem? {
-        val allSessions = sessions
-        val completedSessions = allSessions.count { it.completed }
-        val nextAvailable = allSessions.firstOrNull { it.completed.not() } ?: return null
+    fun getOverview(sessions: List<SwimSession>): SwimSessionListItem? {
+        val completedSessions = sessions.count { it.completed }
+        val nextAvailable = sessions.firstOrNull { it.completed.not() } ?: return null
 
-        val totalCompletedText = "$completedSessions/${allSessions.size}"
+        val totalCompletedText = "$completedSessions/${sessions.size}"
         val nextAvailableText = "Week ${nextAvailable.week.value}, Day ${nextAvailable.weekPriority}"
 
         return SwimSessionListItem.ProgressOverviewViewItem(
