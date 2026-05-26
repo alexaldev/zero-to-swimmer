@@ -55,7 +55,11 @@ class ViewItemsMapper(
         val nextAvailable = sessions.firstOrNull { it.completed.not() } ?: return null
 
         val totalCompletedText = "$completedSessions/${sessions.size}"
-        val nextAvailableText = "Week ${nextAvailable.week.value}, Day ${nextAvailable.weekPriority}"
+        val nextAvailableText = "${stringResourcesProvider.getString(R.string.week)} ${nextAvailable.week.value}, ${
+            stringResourcesProvider.getString(
+                R.string.day,
+            )
+        } ${nextAvailable.weekPriority}"
 
         return SwimSessionListItem.ProgressOverviewViewItem(
             totalCompleted = totalCompletedText,
@@ -124,6 +128,4 @@ class ViewItemsMapper(
 
         return stringResourcesProvider.getString(R.string.meters_total).format(session.swimSets.sumOf { it.meters * it.count })
     }
-
-    private fun SwimmingSet.toViewItemEntry(): String = this.toString()
 }
