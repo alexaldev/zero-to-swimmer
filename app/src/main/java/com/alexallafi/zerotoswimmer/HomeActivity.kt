@@ -15,6 +15,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alexallafi.app.presentation.SessionsFragment
+import com.alexallafi.app.presentation.history.HistoryFragment
 import com.alexallafi.app.presentation.nextSession.NextSessionFragment
 import com.alexallafi.zerotoswimmer.databinding.ActivityHomeBinding
 import kotlinx.coroutines.launch
@@ -51,6 +52,12 @@ class HomeActivity : FragmentActivity() {
                         supportFragmentManager.commit {
                             replace(R.id.fragment_container, NextSessionFragment())
                         }
+                    }
+                }
+
+                R.id.nav_history -> {
+                    supportFragmentManager.commit {
+                        replace(R.id.fragment_container, HistoryFragment())
                     }
                 }
             }
