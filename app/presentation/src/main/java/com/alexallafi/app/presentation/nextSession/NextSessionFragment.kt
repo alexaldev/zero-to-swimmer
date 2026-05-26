@@ -33,8 +33,24 @@ class NextSessionFragment : Fragment(R.layout.fragment_next_session) {
             viewModel
                 .nextViewItem
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
-                .collect {
-                    viewBinding.tvNextDetails.text = it.sessionSetsText
+                .collect { nextSessionViewItem ->
+                    viewBinding.tvNextDetails.text = nextSessionViewItem.sessionSetsText
+                    viewBinding.btnMarkCompleted.setOnClickListener {
+                        when {
+                            nextSessionViewItem.showConfirmState -> viewModel.onAction(UserAction.ConfirmCompletion)
+                            else -> viewModel.onAction(UserAction.MarkSessionAsCompleted(nextSessionViewItem.id))
+                        }
+                    }
+                    viewBinding.btnCancelCompletion.setOnClickListener {
+                        viewModel.onAction(UserAction.CancelCompletion)
+                    }
+                    viewBinding.btnMarkCompleted.text =
+                        when (nextSessionViewItem.showConfirmState) {
+                            true -> getString(R.string.confirm_completion)
+                            false -> getString(R.string.mark_as_completed)
+                        }
+                    viewBinding.btnCancelCompletion.visibility =
+                        if (nextSessionViewItem.showConfirmState) View.VISIBLE else View.GONE
                 }
         }
         viewLifecycleOwner.lifecycleScope.launch {
