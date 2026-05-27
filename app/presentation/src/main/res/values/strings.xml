@@ -13,4 +13,5 @@
     <string name="next_up">🏊 Next Up</string>
     <string name="mark_as_completed">Mark as completed</string>
     <string name="confirm_completion">Confirm completion</string>
+    <string name="no_completed_sessions_yet">No completed sessions yet</string>
 </resources>
