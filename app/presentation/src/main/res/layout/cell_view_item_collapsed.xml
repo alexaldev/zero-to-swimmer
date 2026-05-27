@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:strokeWidth="0dp"
-    android:backgroundTint="@color/white">
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="?attr/colorOutlineVariant"
+    android:backgroundTint="?attr/colorSurface">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,34 +21,35 @@
             android:id="@+id/completed_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:padding="4dp"
+            android:padding="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:background="@drawable/background_rounded_blue"
             android:src="@drawable/ic_check"
-            android:tint="@color/white" />
+            app:tint="?attr/colorOnPrimary" />
 
         <TextView
             android:id="@+id/session_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="?android:textColorPrimary"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toEndOf="@id/completed_icon"
+            app:layout_constraintEnd_toStartOf="@id/collapse_icon"
             app:layout_constraintTop_toTopOf="@id/completed_icon"
             android:layout_marginStart="16dp"
             tools:text="Day 01" />
 
         <TextView
             android:id="@+id/session_message"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="8dp"
-            android:textColor="?android:textColorSecondary"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintStart_toStartOf="@id/session_title"
+            app:layout_constraintEnd_toEndOf="@id/session_title"
             app:layout_constraintTop_toBottomOf="@id/session_title"
-            app:layout_constraintBottom_toBottomOf="@id/completed_icon"
             tools:text="900m total" />
 
         <ImageView
@@ -54,9 +57,10 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/baseline_arrow_drop_down_24"
+            app:tint="?attr/colorOnSurfaceVariant"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/completed_icon"
-            app:layout_constraintBottom_toBottomOf="@id/completed_icon" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

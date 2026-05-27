@@ -35,6 +35,7 @@ class NextSessionFragment : Fragment(R.layout.fragment_next_session) {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collect { nextSessionViewItem ->
                     viewBinding.tvNextDetails.text = nextSessionViewItem.sessionSetsText
+                    viewBinding.tvNextDistance.text = nextSessionViewItem.totalDistanceText
                     viewBinding.btnMarkCompleted.setOnClickListener {
                         when {
                             nextSessionViewItem.showConfirmState -> viewModel.onAction(UserAction.ConfirmCompletion)

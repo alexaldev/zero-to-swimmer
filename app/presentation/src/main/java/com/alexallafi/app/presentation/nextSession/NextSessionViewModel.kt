@@ -49,12 +49,15 @@ class NextSessionViewModel(
                     nextAvailableSession.swimSets,
                     configRepository.getPoolSize(),
                 )
+            
+            val totalDistanceText = viewItemsMapper.sessionsCompletedMessaged(nextAvailableSession)
 
             val isConfirming = confirmingId == nextAvailableSession.id
 
             NextSessionViewItem(
                 id = nextAvailableSession.id,
                 sessionSetsText = nextAvailableText,
+                totalDistanceText = totalDistanceText,
                 showConfirmState = isConfirming,
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NextSessionViewItem())
@@ -104,5 +107,6 @@ data class FavoriteSessionViewItem(
 data class NextSessionViewItem(
     val id: String = "",
     val sessionSetsText: String = "",
+    val totalDistanceText: String = "",
     val showConfirmState: Boolean = false,
 )

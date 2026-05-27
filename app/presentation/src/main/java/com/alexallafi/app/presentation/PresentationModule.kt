@@ -13,5 +13,5 @@ val presentationModule =
         viewModelOf(::NextSessionViewModel)
         viewModelOf(::HistoryViewModel)
         singleOf(::AndroidStringProvider) bind StringResourcesProvider::class
-        factory { ViewItemsMapper(get(), get(), get(), includeOverview = true) }
+        factory { ViewItemsMapper(get(), get(), get(), includeOverview = false) }
     }
