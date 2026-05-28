@@ -34,6 +34,12 @@ class HomeActivity : FragmentActivity() {
         setupNavigation(savedInstanceState)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt("currentScreen", viewBinding.navBar.selectedItemId)
+    }
+
     private fun setupNavigation(savedInstanceState: Bundle?) {
         viewBinding.navBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -48,10 +54,8 @@ class HomeActivity : FragmentActivity() {
                 }
 
                 R.id.nav_next_sessions -> {
-                    if (savedInstanceState == null) {
-                        supportFragmentManager.commit {
-                            replace(R.id.fragment_container, NextSessionFragment())
-                        }
+                    supportFragmentManager.commit {
+                        replace(R.id.fragment_container, NextSessionFragment())
                     }
                 }
 
@@ -63,7 +67,8 @@ class HomeActivity : FragmentActivity() {
             }
             true
         }
-        viewBinding.navBar.selectedItemId = R.id.nav_sessions_list
+
+        viewBinding.navBar.selectedItemId = savedInstanceState?.getInt("currentScreen") ?: R.id.nav_sessions_list
     }
 
     private fun setupSplashScreen() {
