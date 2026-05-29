@@ -21,6 +21,8 @@ class ViewItemsMapper(
      */
     private val includeOverview: Boolean = true,
 ) {
+    private val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+
     fun mapToViewItems(swimSessionsFlow: Flow<List<SwimSession>>) = swimSessionsFlow.map { mapToViewItems(it) }
 
     suspend fun mapToViewItems(
@@ -143,13 +145,19 @@ class ViewItemsMapper(
             },
         )
 
-    @VisibleForTesting
-    fun sessionsCompletedMessaged(session: SwimSession): String {
-        if (session.completed) {
-            val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-            return stringResourcesProvider.getString(R.string.completed_at).format(session.completedAt!!.format(formatter))
-        }
+    fun completedAtMessage(session: SwimSession): String =
+        stringResourcesProvider.getString(R.string.completed_at).format(session.completedAt!!.format(dateFormatter))
 
-        return totalDistanceForSession(session)
-    }
+    @VisibleForTesting
+    fun sessionsCompletedMessaged(session: SwimSession): String =
+        when {
+            session.completed -> {
+                require(session.completedAt != null) { "Session cannot be completed and have null completedAt property" }
+                completedAtMessage(session)
+            }
+
+            else -> {
+                totalDistanceForSession(session)
+            }
+        }
 }
