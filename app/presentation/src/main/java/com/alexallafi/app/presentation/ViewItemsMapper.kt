@@ -31,6 +31,9 @@ class ViewItemsMapper(
 
         if (includeOverview) getOverview(swimSessions)?.let { result += it }
 
+        val poolSize = configurationRepository.getPoolSize()
+        val favoriteId = configurationRepository.getFavoriteSessionId()
+
         swimSessions
             .groupBy { it.week.value }
             .map { session ->
@@ -44,7 +47,15 @@ class ViewItemsMapper(
                                 stringResourcesProvider.getString(R.string.completed),
                     )
 
-                session.value.map { toSwimSessionViewItem(it, expandedIds) }.forEach { sessionViewItem -> result += sessionViewItem }
+                session.value
+                    .map {
+                        toSwimSessionViewItem(
+                            it,
+                            expandedIds,
+                            poolSize,
+                            favoriteId,
+                        )
+                    }.forEach { sessionViewItem -> result += sessionViewItem }
             }
 
         return result
@@ -67,25 +78,31 @@ class ViewItemsMapper(
         )
     }
 
-    suspend fun toSwimSessionViewItem(
+    @VisibleForTesting
+    fun toSwimSessionViewItem(
         session: SwimSession,
         expandedIds: Set<String> = emptySet(),
-    ): SwimSessionListItem.SwimSessionViewItem {
-        val poolSize = configurationRepository.getPoolSize()
-        val favoriteId = configurationRepository.getFavoriteSessionId()
-
-        return SwimSessionListItem.SwimSessionViewItem(
+        poolSize: PoolSize,
+        favoriteId: String?,
+    ): SwimSessionListItem.SwimSessionViewItem =
+        SwimSessionListItem.SwimSessionViewItem(
             id = session.id,
-            title = titleFor(session),
+            title = dayOnlyTitleFor(session),
             message = sessionsCompletedMessaged(session),
             isCompleted = session.completed,
             isFavorite = session.id == favoriteId,
             isExpanded = expandedIds.contains(session.id),
             swimRounds = mapSwimRoundsFor(session.swimSets, poolSize),
         )
-    }
 
-    fun titleFor(session: SwimSession): String =
+    fun weekAndDayTitleFor(session: SwimSession): String =
+        "${stringResourcesProvider.getString(R.string.week)} ${session.week.value}, ${
+            stringResourcesProvider.getString(
+                R.string.day,
+            )
+        } ${session.weekPriority}"
+
+    fun dayOnlyTitleFor(session: SwimSession): String =
         "${stringResourcesProvider.getString(
             R.string.day,
         )} ${((session.weekPriority - 1) % (SwimSession.AVAILABLE_WEEK_PRIORITIES.last)) + 1}"
@@ -119,6 +136,13 @@ class ViewItemsMapper(
         }
     }
 
+    fun totalDistanceForSession(session: SwimSession): String =
+        stringResourcesProvider.getString(R.string.meters_total).format(
+            session.swimSets.sumOf {
+                it.meters * it.count
+            },
+        )
+
     @VisibleForTesting
     fun sessionsCompletedMessaged(session: SwimSession): String {
         if (session.completed) {
@@ -126,6 +150,6 @@ class ViewItemsMapper(
             return stringResourcesProvider.getString(R.string.completed_at).format(session.completedAt!!.format(formatter))
         }
 
-        return stringResourcesProvider.getString(R.string.meters_total).format(session.swimSets.sumOf { it.meters * it.count })
+        return totalDistanceForSession(session)
     }
 }

@@ -34,6 +34,7 @@ class NextSessionFragment : Fragment(R.layout.fragment_next_session) {
                 .nextViewItem
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collect { nextSessionViewItem ->
+                    viewBinding.tvNextSummary.text = nextSessionViewItem.sessionTitle
                     viewBinding.tvNextDetails.text = nextSessionViewItem.sessionSetsText
                     viewBinding.tvNextDistance.text = nextSessionViewItem.totalDistanceText
                     viewBinding.btnMarkCompleted.setOnClickListener {
@@ -52,14 +53,6 @@ class NextSessionFragment : Fragment(R.layout.fragment_next_session) {
                         }
                     viewBinding.btnCancelCompletion.visibility =
                         if (nextSessionViewItem.showConfirmState) View.VISIBLE else View.GONE
-                }
-        }
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel
-                .overviewViewItem
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
-                .collect { overview ->
-                    viewBinding.tvNextSummary.text = overview?.nextAvailable ?: "-"
                 }
         }
     }

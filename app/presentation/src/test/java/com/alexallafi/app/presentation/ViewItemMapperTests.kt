@@ -145,7 +145,12 @@ class ViewItemMapperTests {
                     completedAt = null,
                 )
 
-            val testSwimSetViewItem = testMapper.toSwimSessionViewItem(fakeSwimSession)
+            val testSwimSetViewItem =
+                testMapper.toSwimSessionViewItem(
+                    fakeSwimSession,
+                    poolSize = mockConfigurationRepository.getPoolSize(),
+                    favoriteId = mockConfigurationRepository.getFavoriteSessionId(),
+                )
             assertThat(testSwimSetViewItem.swimRounds).contains("2 x 25")
         }
 
@@ -169,7 +174,12 @@ class ViewItemMapperTests {
                     completedAt = null,
                 )
 
-            val testSwimSetViewItem = testMapper.toSwimSessionViewItem(fakeSwimSession)
+            val testSwimSetViewItem =
+                testMapper.toSwimSessionViewItem(
+                    fakeSwimSession,
+                    poolSize = mockConfigurationRepository.getPoolSize(),
+                    favoriteId = mockConfigurationRepository.getFavoriteSessionId(),
+                )
             assertThat(testSwimSetViewItem.swimRounds).contains("1 x 50")
         }
 

@@ -29,7 +29,7 @@ class NextSessionViewModel(
             val favoriteSession = sessions.find { it.id == favoriteId }
             val favoriteText =
                 favoriteSession?.let {
-                    val sessionIdText = viewItemsMapper.titleFor(it)
+                    val sessionIdText = viewItemsMapper.weekAndDayTitleFor(it)
                     val setsText = viewItemsMapper.mapSwimRoundsFor(it.swimSets, configRepository.getPoolSize())
                     "$sessionIdText\n$setsText"
                 } ?: "-"
@@ -49,25 +49,19 @@ class NextSessionViewModel(
                     nextAvailableSession.swimSets,
                     configRepository.getPoolSize(),
                 )
-            
-            val totalDistanceText = viewItemsMapper.sessionsCompletedMessaged(nextAvailableSession)
+
+            val totalDistanceText = viewItemsMapper.totalDistanceForSession(nextAvailableSession)
 
             val isConfirming = confirmingId == nextAvailableSession.id
 
             NextSessionViewItem(
                 id = nextAvailableSession.id,
+                sessionTitle = viewItemsMapper.weekAndDayTitleFor(nextAvailableSession),
                 sessionSetsText = nextAvailableText,
                 totalDistanceText = totalDistanceText,
                 showConfirmState = isConfirming,
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NextSessionViewItem())
-
-    val overviewViewItem: StateFlow<SwimSessionListItem.ProgressOverviewViewItem?> =
-        swimSessionsRepository
-            .observeAll()
-            .map {
-                viewItemsMapper.getOverview(it) as? SwimSessionListItem.ProgressOverviewViewItem
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     fun onAction(action: UserAction) {
         when (action) {
@@ -106,6 +100,7 @@ data class FavoriteSessionViewItem(
 
 data class NextSessionViewItem(
     val id: String = "",
+    val sessionTitle: String = "",
     val sessionSetsText: String = "",
     val totalDistanceText: String = "",
     val showConfirmState: Boolean = false,
