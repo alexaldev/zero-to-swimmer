@@ -3,6 +3,7 @@ package com.alexallafi.app.presentation.nextSession
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexallafi.app.domain.ConfigurationRepository
+import com.alexallafi.app.domain.HistoryRepository
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.presentation.SwimSessionListItem
 import com.alexallafi.app.presentation.ViewItemsMapper
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 class NextSessionViewModel(
     private val swimSessionsRepository: SwimSessionsRepository,
     private val configRepository: ConfigurationRepository,
+    private val historyRepository: HistoryRepository,
     private val viewItemsMapper: ViewItemsMapper,
 ) : ViewModel() {
     private val confirmingSessionId = MutableStateFlow<String?>(null)
@@ -74,6 +76,7 @@ class NextSessionViewModel(
                 viewModelScope.launch {
                     swimSessionsRepository.toggleCompleted(sessionId)
                     confirmingSessionId.value = null
+                    saveSessionInHistory(sessionId)
                 }
             }
 
@@ -81,6 +84,11 @@ class NextSessionViewModel(
                 confirmingSessionId.value = null
             }
         }
+    }
+
+    private suspend fun saveSessionInHistory(sessionId: String) {
+        val swimSession = swimSessionsRepository.getById(sessionId) ?: return // TODO
+        historyRepository.addSession(swimSession)
     }
 }
 

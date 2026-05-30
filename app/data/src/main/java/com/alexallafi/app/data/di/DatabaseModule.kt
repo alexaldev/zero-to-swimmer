@@ -1,9 +1,13 @@
 package com.alexallafi.app.data.di
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.alexallafi.app.data.local_storage.DefaultInitialDataPopulator
+import com.alexallafi.app.data.local_storage.LocalHistoryRepository
 import com.alexallafi.app.data.local_storage.LocalSwimSessionsRepository
 import com.alexallafi.app.data.local_storage.PrefsConfigurationRepository
 import com.alexallafi.app.domain.ConfigurationRepository
+import com.alexallafi.app.domain.HistoryRepository
 import com.alexallafi.app.domain.InitialDataPopulator
 import com.alexallafi.app.domain.SwimSessionsRepository
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +26,8 @@ val localStorageModule =
                 ioDispatcher = get(named("IO")),
             )
         }
+        singleOf(::LocalHistoryRepository) bind HistoryRepository::class
+        single<SharedPreferences> { get<Context>().getSharedPreferences("session", Context.MODE_PRIVATE) }
     }
 
 val coroutinesModule =

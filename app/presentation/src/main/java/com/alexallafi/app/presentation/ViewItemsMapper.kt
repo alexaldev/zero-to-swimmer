@@ -9,6 +9,7 @@ import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.domain.SwimmingWeek
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -147,6 +148,9 @@ class ViewItemsMapper(
 
     fun completedAtMessage(session: SwimSession): String =
         stringResourcesProvider.getString(R.string.completed_at).format(session.completedAt!!.format(dateFormatter))
+
+    fun completedAtMessage(date: OffsetDateTime): String =
+        stringResourcesProvider.getString(R.string.completed_at).format(date.format(dateFormatter))
 
     @VisibleForTesting
     fun sessionsCompletedMessaged(session: SwimSession): String =
