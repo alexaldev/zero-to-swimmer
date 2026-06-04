@@ -30,5 +30,13 @@ jobs:
       - name: Run data module tests
         run: ./gradlew :app:data:test
 
+      # Add this step to save the reports
+      - name: Upload Test Reports
+        if: always() # This ensures reports are uploaded even if tests fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: "**/build/reports/tests/"
+
       - name: Run presentation module tests
         run: ./gradlew :app:presentation:test
