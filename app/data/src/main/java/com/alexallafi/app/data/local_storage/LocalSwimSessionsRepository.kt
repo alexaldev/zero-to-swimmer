@@ -83,10 +83,11 @@ class LocalSwimSessionsRepository(
         withContext(ioDispatcher) {
             val file = File(context.filesDir, "swimming_sessions.json")
 
-            val sessionsEncoded = Json.encodeToString(swimSessions.toDataModel())
+            val sortedSessions = swimSessions.sortedBy { it.totalPriority }
+            val sessionsEncoded = Json.encodeToString(sortedSessions.toDataModel())
 
             file.writeText(sessionsEncoded).also {
-                sessionsFlow.update { swimSessions }
+                sessionsFlow.update { sortedSessions }
             }
         }
     }
