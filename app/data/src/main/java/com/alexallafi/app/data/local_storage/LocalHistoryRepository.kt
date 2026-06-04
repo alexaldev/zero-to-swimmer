@@ -7,12 +7,9 @@ import com.alexallafi.app.data.toStorableHistoryEntry
 import com.alexallafi.app.domain.HistoryEntry
 import com.alexallafi.app.domain.HistoryRepository
 import com.alexallafi.app.domain.SwimSession
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
 
@@ -63,4 +60,16 @@ class LocalHistoryRepository(
             )
         return decoded
     }
+
+    override suspend fun addSessions(sessions: List<SwimSession>) {
+        val current = getAllAsDataModel()
+        val updated = sessions.map { it.toStorableHistoryEntry() } + current
+        val encoded = Json.encodeToString(updated)
+        prefs.edit {
+            putString("history", encoded)
+        }
+        historyStateFlow.update { updated.toDomainHistoryEntries() }
+    }
+
+    override suspend fun isEmpty(): Boolean = historyStateFlow.value.isEmpty()
 }

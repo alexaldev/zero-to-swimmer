@@ -28,12 +28,11 @@ class HomeViewModel(
                 _initializingData.update { false }
             } else {
                 if (historyRepository.getAll().isEmpty()) {
-                    allSessionsResult
-                        .getOrThrow()
-                        .filter { it.completed }
-                        .forEach {
-                            historyRepository.addSession(it)
-                        }
+                    historyRepository.addSessions(
+                        allSessionsResult
+                            .getOrThrow()
+                            .filter { it.completed },
+                    )
                     _initializingData.update { false }
                 }
                 _initializingData.update { false }
