@@ -46,11 +46,6 @@ class LocalSwimSessionsRepositoryTest {
         }
 
     @Test
-    fun fail() {
-        assertThat(true).isFalse()
-    }
-
-    @Test
     fun `addAll and then get should return the same sessions`() =
         runTest {
             val fakeSessions =
