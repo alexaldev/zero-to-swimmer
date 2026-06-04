@@ -72,4 +72,11 @@ class LocalHistoryRepository(
     }
 
     override suspend fun isEmpty(): Boolean = historyStateFlow.value.isEmpty()
+
+    override suspend fun clearAll() {
+        prefs.edit {
+            putString("history", "")
+        }
+        historyStateFlow.update { emptyList() }
+    }
 }

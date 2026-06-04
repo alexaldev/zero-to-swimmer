@@ -12,4 +12,6 @@ interface HistoryRepository {
     suspend fun addSession(swimSession: SwimSession)
 
     suspend fun addSessions(sessions: List<SwimSession>)
+
+    suspend fun clearAll()
 }

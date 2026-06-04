@@ -25,7 +25,7 @@ class LocalSwimSessionsRepository(
     private val sessionsFlow = MutableStateFlow<List<SwimSession>>(emptyList())
 
     override suspend fun getAll(): Result<List<SwimSession>> {
-//        if (sessionsFlow.value.isNotEmpty()) return Result.success(sessionsFlow.value)
+        if (sessionsFlow.value.isNotEmpty()) return Result.success(sessionsFlow.value)
 
         return withContext(ioDispatcher) {
             val file = File(context.filesDir, "swimming_sessions.json")
@@ -127,5 +127,13 @@ class LocalSwimSessionsRepository(
 
     override suspend fun getById(id: String): SwimSession? {
         return getAll().getOrElse { return null }.firstOrNull { it.id == id }
+    }
+
+    override suspend fun clearAll() {
+        withContext(ioDispatcher) {
+            val file = File(context.filesDir, "swimming_sessions.json")
+            file.delete()
+            sessionsFlow.update { emptyList() }
+        }
     }
 }
