@@ -1,11 +1,15 @@
 package com.alexallafi.app.data.local_storage
 
 import android.content.Context
+import assertk.Assert
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import assertk.assertions.isTrue
+import assertk.assertions.prop
 import com.alexallafi.app.domain.SwimSession
 import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.domain.SwimmingWeek
@@ -14,10 +18,12 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import java.time.OffsetDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocalSwimSessionsRepositoryTest {
@@ -155,15 +161,24 @@ class LocalSwimSessionsRepositoryTest {
         }
 
     @Test
-    fun `clearAll should remove all sessions and make getAll return failure`() =
+    fun `clearAll should clear completedAt field for all sessions and set as incomplete`() =
         runTest {
-            val fakeSessions = listOf(SwimSession(1, true, SwimmingWeek.FIRST, fakeSwimSets, null))
+            val fakeSessions =
+                listOf(
+                    SwimSession(1, true, SwimmingWeek.FIRST, fakeSwimSets, OffsetDateTime.now()),
+                    SwimSession(2, true, SwimmingWeek.FIRST, fakeSwimSets, OffsetDateTime.now()),
+                    SwimSession(3, false, SwimmingWeek.SECOND, fakeSwimSets, null),
+                )
             testRepository.addAll(fakeSessions)
 
             testRepository.clearAll()
 
             val result = testRepository.getAll()
-            assertThat(result.isFailure).isTrue()
+            assertThat(result.isSuccess).isTrue()
+            result
+                .onSuccess { sessions ->
+                    sessions.forEach { session -> assertThat(session).isIncomplete() }
+                }.onFailure { fail("Failed to get all sessions") }
         }
 
     @Test
@@ -179,4 +194,11 @@ class LocalSwimSessionsRepositoryTest {
             val nullResult = testRepository.getById("non-existent")
             assertThat(nullResult).isEqualTo(null)
         }
+
+    private fun Assert<SwimSession>.isIncomplete() {
+        all {
+            prop(SwimSession::completed).isEqualTo(false)
+            prop(SwimSession::completedAt).isNull()
+        }
+    }
 }

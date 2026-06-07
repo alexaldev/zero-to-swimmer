@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alexallafi.app.presentation.R
 import com.alexallafi.app.presentation.databinding.FragmentSettingsBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val viewBinding by viewBinding(FragmentSettingsBinding::bind)
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onViewCreated(
         view: View,
@@ -21,7 +23,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private fun setupListeners() {
         viewBinding.btnResetAll.setOnClickListener {
-            // Handle reset logic here
+            viewModel.onAction(UserAction.ClearData)
         }
     }
 }

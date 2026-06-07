@@ -1,54 +1,45 @@
 package com.alexallafi.app.presentation.history
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.alexallafi.app.domain.HistoryRepository
-import com.alexallafi.app.domain.SwimSession
 import com.alexallafi.app.domain.SwimSessionsRepository
-import com.alexallafi.app.presentation.SwimSessionListItem
 import com.alexallafi.app.presentation.ViewItemsMapper
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class HistoryViewModel(
     swimSessionsRepository: SwimSessionsRepository,
-    private val historyRepository: HistoryRepository,
-    private val viewItemsMapper: ViewItemsMapper,
+    historyRepository: HistoryRepository,
+    viewItemsMapper: ViewItemsMapper,
 ) : ViewModel() {
-    val historyItems =
+    private val monthFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
+
+    val historyItems: StateFlow<List<HistoryListItem>> =
         historyRepository
             .observeAll()
-            .map { historyItems ->
-                historyItems.map { historyEntry ->
-                    val session = swimSessionsRepository.getById(historyEntry.swimSessionId)
-                    HistoryViewItem(
-                        sessionTitle = if (session != null) viewItemsMapper.weekAndDayTitleFor(session) else "",
-                        completedAt = viewItemsMapper.completedAtMessage(historyEntry.completedAt),
-                    )
-                }
+            .map { historyEntries ->
+                val listItems = mutableListOf<HistoryListItem>()
+
+                historyEntries
+                    .groupBy { it.completedAt.format(monthFormatter) }
+                    .forEach { (month, entries) ->
+                        listItems.add(HistoryListItem.MonthHeader(month))
+                        entries.forEach { entry ->
+                            val session = swimSessionsRepository.getById(entry.swimSessionId)
+                            listItems.add(
+                                HistoryListItem.SessionItem(
+                                    id = entry.swimSessionId,
+                                    sessionTitle = if (session != null) viewItemsMapper.weekAndDayTitleFor(session) else "",
+                                    completedAt = viewItemsMapper.completedAtMessage(entry.completedAt),
+                                ),
+                            )
+                        }
+                    }
+                listItems
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-//    val historyItems: StateFlow<List<HistoryViewItem>> =
-//        swimSessionsRepository
-//            .observeAll()
-//            .map { sessions ->
-//                sessions
-//                    .filter { it.completed }
-//                    .sortedByDescending { it.completedAt }
-//                    .map { session ->
-//                        HistoryViewItem(
-//                            sessionTitle = viewItemsMapper.weekAndDayTitleFor(session),
-//                            completedAt = viewItemsMapper.completedAtMessage(session),
-//                        )
-//                    }
-//            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 }
-
-data class HistoryViewItem(
-    val sessionTitle: String = "",
-    val completedAt: String = "",
-)

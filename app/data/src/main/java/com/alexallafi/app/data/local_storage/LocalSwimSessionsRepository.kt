@@ -132,9 +132,13 @@ class LocalSwimSessionsRepository(
 
     override suspend fun clearAll() {
         withContext(ioDispatcher) {
-            val file = File(context.filesDir, "swimming_sessions.json")
-            file.delete()
-            sessionsFlow.update { emptyList() }
+            getAll().onSuccess { sessionsResult ->
+                val allUpdated =
+                    sessionsResult.map { session ->
+                        session.copy(completed = false, completedAt = null)
+                    }
+                addAll(allUpdated)
+            }
         }
     }
 }
