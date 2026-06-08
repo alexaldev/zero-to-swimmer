@@ -45,7 +45,7 @@ class LocalSwimSessionsRepositoryTest {
     }
 
     private val fakeSwimSets =
-        buildList<SwimmingSet> {
+        buildList {
             add(SwimmingSet(meters = 100, count = 4, restBreathsCount = 12))
             add(SwimmingSet(meters = 100, count = 4, restBreathsCount = 12))
             add(SwimmingSet(meters = 100, count = 4, restBreathsCount = 12))
@@ -73,7 +73,7 @@ class LocalSwimSessionsRepositoryTest {
     fun `getAll should return sessions sorted by total priority`() =
         runTest {
             val fakeSessions =
-                buildList<SwimSession> {
+                buildList {
                     add(SwimSession(1, true, SwimmingWeek.FIRST, fakeSwimSets, null))
                     add(SwimSession(1, false, SwimmingWeek.SECOND, fakeSwimSets, null))
                     add(SwimSession(3, false, SwimmingWeek.SECOND, fakeSwimSets, null))
