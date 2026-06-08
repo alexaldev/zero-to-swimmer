@@ -18,4 +18,5 @@
     <string name="data_category">Data</string>
     <string name="reset_all">Reset all</string>
     <string name="reset_all_summary">Clear all your progress and history</string>
+    <string name="todo">TODO</string>
 </resources>
