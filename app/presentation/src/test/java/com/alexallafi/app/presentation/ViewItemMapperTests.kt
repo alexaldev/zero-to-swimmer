@@ -42,6 +42,8 @@ class ViewItemMapperTests {
 
         coEvery { mockSwimSessionsRepository.completedMetersForWeek(SwimmingWeek(3)) } returns 0
         coEvery { mockSwimSessionsRepository.totalMetersForWeek(SwimmingWeek(3)) } returns 3000
+
+        coEvery { mockConfigurationRepository.getFavoriteSessionId() } returns "irrelevant"
     }
 
     @Test
@@ -143,7 +145,12 @@ class ViewItemMapperTests {
                     completedAt = null,
                 )
 
-            val testSwimSetViewItem = testMapper.toSwimSessionViewItem(fakeSwimSession)
+            val testSwimSetViewItem =
+                testMapper.toSwimSessionViewItem(
+                    fakeSwimSession,
+                    poolSize = mockConfigurationRepository.getPoolSize(),
+                    favoriteId = mockConfigurationRepository.getFavoriteSessionId(),
+                )
             assertThat(testSwimSetViewItem.swimRounds).contains("2 x 25")
         }
 
@@ -167,7 +174,12 @@ class ViewItemMapperTests {
                     completedAt = null,
                 )
 
-            val testSwimSetViewItem = testMapper.toSwimSessionViewItem(fakeSwimSession)
+            val testSwimSetViewItem =
+                testMapper.toSwimSessionViewItem(
+                    fakeSwimSession,
+                    poolSize = mockConfigurationRepository.getPoolSize(),
+                    favoriteId = mockConfigurationRepository.getFavoriteSessionId(),
+                )
             assertThat(testSwimSetViewItem.swimRounds).contains("1 x 50")
         }
 

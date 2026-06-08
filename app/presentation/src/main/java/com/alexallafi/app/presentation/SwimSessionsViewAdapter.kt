@@ -5,7 +5,8 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.alexallafi.app.presentation.databinding.CellViewItemCollapsedBinding
 import com.alexallafi.app.presentation.databinding.CellViewItemExpandedBinding
@@ -14,13 +15,12 @@ import com.alexallafi.app.presentation.databinding.CellViewItemWeekHeaderBinding
 
 class SwimSessionsViewAdapter(
     private val context: Context,
-    private val sessionItems: MutableList<SwimSessionListItem> = mutableListOf(),
     private val expandListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
     private val collapseListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
     private val onCompletedToggleListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
     private val onFavoriteToggleListener: (SwimSessionListItem.SwimSessionViewItem) -> Unit,
     private val scrollToNextAvailableListener: () -> Unit,
-) : RecyclerView.Adapter<ViewHolder>() {
+) : ListAdapter<SwimSessionListItem, ViewHolder>(SwimSessionListItemDiffCallback()) {
     companion object {
         const val VIEW_TYPE_OVERVIEW = 419
         const val VIEW_TYPE_WEEK_HEADER = 420
@@ -29,13 +29,11 @@ class SwimSessionsViewAdapter(
     }
 
     fun updateData(newItems: List<SwimSessionListItem>) {
-        this.sessionItems.clear()
-        this.sessionItems.addAll(newItems)
-        this.notifyDataSetChanged()
+        submitList(newItems)
     }
 
     override fun getItemViewType(position: Int): Int =
-        when (val sessionViewItem = sessionItems[position]) {
+        when (val sessionViewItem = getItem(position)) {
             is SwimSessionListItem.WeekHeaderItem -> {
                 VIEW_TYPE_WEEK_HEADER
             }
@@ -93,15 +91,14 @@ class SwimSessionsViewAdapter(
         holder: ViewHolder,
         position: Int,
     ) {
+        val item = getItem(position)
         when (holder) {
-            is HeaderViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.WeekHeaderItem)
-            is CollapsedSessionViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.SwimSessionViewItem)
-            is ExpandedSessionViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.SwimSessionViewItem)
-            is OverviewViewHolder -> holder.bind(sessionItems[position] as SwimSessionListItem.ProgressOverviewViewItem)
+            is HeaderViewHolder -> holder.bind(item as SwimSessionListItem.WeekHeaderItem)
+            is CollapsedSessionViewHolder -> holder.bind(item as SwimSessionListItem.SwimSessionViewItem)
+            is ExpandedSessionViewHolder -> holder.bind(item as SwimSessionListItem.SwimSessionViewItem)
+            is OverviewViewHolder -> holder.bind(item as SwimSessionListItem.ProgressOverviewViewItem)
         }
     }
-
-    override fun getItemCount() = this.sessionItems.size
 
     class HeaderViewHolder(
         private val viewBinding: CellViewItemWeekHeaderBinding,
@@ -165,4 +162,33 @@ class SwimSessionsViewAdapter(
             viewBinding.scrollToAvailable.setOnClickListener { scrollToNextAvailableListener() }
         }
     }
+}
+
+private class SwimSessionListItemDiffCallback : DiffUtil.ItemCallback<SwimSessionListItem>() {
+    override fun areItemsTheSame(
+        oldItem: SwimSessionListItem,
+        newItem: SwimSessionListItem,
+    ): Boolean =
+        when (oldItem) {
+            is SwimSessionListItem.SwimSessionViewItem if newItem is SwimSessionListItem.SwimSessionViewItem -> {
+                oldItem.id == newItem.id
+            }
+
+            is SwimSessionListItem.WeekHeaderItem if newItem is SwimSessionListItem.WeekHeaderItem -> {
+                oldItem.startText == newItem.startText
+            }
+
+            is SwimSessionListItem.ProgressOverviewViewItem if newItem is SwimSessionListItem.ProgressOverviewViewItem -> {
+                true
+            }
+
+            else -> {
+                false
+            }
+        }
+
+    override fun areContentsTheSame(
+        oldItem: SwimSessionListItem,
+        newItem: SwimSessionListItem,
+    ): Boolean = oldItem == newItem
 }

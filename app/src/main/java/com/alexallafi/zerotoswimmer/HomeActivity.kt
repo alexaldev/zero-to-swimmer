@@ -2,25 +2,26 @@ package com.alexallafi.zerotoswimmer
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alexallafi.app.presentation.SessionsFragment
+import com.alexallafi.app.presentation.history.HistoryFragment
 import com.alexallafi.app.presentation.nextSession.NextSessionFragment
+import com.alexallafi.app.presentation.settings.SettingsFragment
 import com.alexallafi.zerotoswimmer.databinding.ActivityHomeBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeActivity : FragmentActivity() {
+class HomeActivity : AppCompatActivity() {
     private val viewModel: HomeViewModel by viewModel()
     private val viewBinding by viewBinding { ActivityHomeBinding.inflate(layoutInflater) }
 
@@ -33,6 +34,12 @@ class HomeActivity : FragmentActivity() {
         setupNavigation(savedInstanceState)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt("currentScreen", viewBinding.navBar.selectedItemId)
+    }
+
     private fun setupNavigation(savedInstanceState: Bundle?) {
         viewBinding.navBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -43,20 +50,27 @@ class HomeActivity : FragmentActivity() {
                 }
 
                 R.id.nav_settings -> {
-                    Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
+                    supportFragmentManager.commit {
+                        replace(R.id.fragment_container, SettingsFragment())
+                    }
                 }
 
                 R.id.nav_next_sessions -> {
-                    if (savedInstanceState == null) {
-                        supportFragmentManager.commit {
-                            replace(R.id.fragment_container, NextSessionFragment())
-                        }
+                    supportFragmentManager.commit {
+                        replace(R.id.fragment_container, NextSessionFragment())
+                    }
+                }
+
+                R.id.nav_history -> {
+                    supportFragmentManager.commit {
+                        replace(R.id.fragment_container, HistoryFragment())
                     }
                 }
             }
             true
         }
-        viewBinding.navBar.selectedItemId = R.id.nav_sessions_list
+
+        viewBinding.navBar.selectedItemId = savedInstanceState?.getInt("currentScreen") ?: R.id.nav_sessions_list
     }
 
     private fun setupSplashScreen() {

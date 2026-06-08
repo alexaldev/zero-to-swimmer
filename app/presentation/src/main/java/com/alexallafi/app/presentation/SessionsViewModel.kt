@@ -1,5 +1,6 @@
 package com.alexallafi.app.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,19 +11,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SessionsViewModel(
     private val sessionsRepository: SwimSessionsRepository,
     private val viewItemsMapper: ViewItemsMapper,
     private val configurationRepository: ConfigurationRepository,
+    private val memoryStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _sessionsViewItems: MutableStateFlow<List<SwimSessionListItem>> =
         MutableStateFlow(emptyList())
     val sessionsViewItems = _sessionsViewItems.asLiveData()
 
-    private val expandedSessionIds = MutableStateFlow<Set<String>>(emptySet())
+    private val expandedSessionIds =
+        memoryStateHandle.getStateFlow<Set<String>>(EXPANDED_IDS_KEY, emptySet())
 
     init {
         combine(
@@ -43,11 +45,11 @@ class SessionsViewModel(
     fun onAction(action: SwimSessionAction) {
         when (action) {
             is SwimSessionAction.CollapseSession -> {
-                expandedSessionIds.update { it - action.sessionViewItem.id }
+                memoryStateHandle[EXPANDED_IDS_KEY] = expandedSessionIds.value - action.sessionViewItem.id
             }
 
             is SwimSessionAction.ExpandSession -> {
-                expandedSessionIds.update { it + action.sessionViewItem.id }
+                memoryStateHandle[EXPANDED_IDS_KEY] = expandedSessionIds.value + action.sessionViewItem.id
             }
 
             is SwimSessionAction.CompletedToggled -> {
@@ -78,3 +80,5 @@ sealed interface ScreenState {
         val position: Int,
     ) : ScreenState
 }
+
+private const val EXPANDED_IDS_KEY = "expanded_session_ids"

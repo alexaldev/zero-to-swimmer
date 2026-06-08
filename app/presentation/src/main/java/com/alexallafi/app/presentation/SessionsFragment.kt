@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alexallafi.app.presentation.databinding.FragmentSwimSessionsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,6 +44,8 @@ class SessionsFragment : Fragment(R.layout.fragment_swim_sessions) {
         viewBinding.sessionsList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewBinding.sessionsList.adapter = this.adapter
+        
+        (viewBinding.sessionsList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         viewModel.sessionsViewItems.observe(viewLifecycleOwner) {
             adapter.updateData(it)

@@ -5,22 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:backgroundTint="?attr/colorSurfaceContainerLowest"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:strokeWidth="0dp">
+    app:cardCornerRadius="28dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    android:backgroundTint="?attr/colorPrimaryContainer">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="24dp">
 
         <TextView
             android:id="@+id/total_completed_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sessions_completed"
-            android:textSize="14sp"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnPrimaryContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,13 +29,21 @@
             android:id="@+id/total_completed_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="28sp"
+            android:textAppearance="?attr/textAppearanceDisplaySmall"
+            android:textColor="?attr/colorOnPrimaryContainer"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/total_completed_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/total_completed_title"
+            app:layout_constraintTop_toBottomOf="@id/total_completed_title"
+            app:layout_constraintStart_toStartOf="parent"
             tools:text="4/24" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:dividerColor="?attr/colorOnPrimaryContainer"
+            android:alpha="0.2"
+            app:layout_constraintTop_toBottomOf="@id/total_completed_value" />
 
         <TextView
             android:id="@+id/next_available_title"
@@ -42,29 +51,32 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/next_available_session"
-            android:textSize="12sp"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:textColor="?attr/colorOnPrimaryContainer"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/total_completed_value" />
+            app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <TextView
             android:id="@+id/next_available_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textStyle="bold"
-            app:layout_constraintBaseline_toBaselineOf="@id/next_available_title"
-            app:layout_constraintStart_toEndOf="@id/next_available_title"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            app:layout_constraintTop_toBottomOf="@id/next_available_title"
+            app:layout_constraintStart_toStartOf="parent"
             tools:text="Week 2, Day 3" />
 
-        <ImageView
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/scroll_to_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_double_down"
-            app:layout_constraintBottom_toBottomOf="@id/next_available_title"
-            app:layout_constraintEnd_toEndOf="@id/total_completed_value"
-            app:layout_constraintStart_toStartOf="@id/total_completed_value"
-            app:layout_constraintTop_toTopOf="@id/next_available_title" />
+            app:fabSize="mini"
+            app:elevation="0dp"
+            app:backgroundTint="?attr/colorPrimary"
+            app:tint="?attr/colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

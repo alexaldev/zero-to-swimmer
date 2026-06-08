@@ -1,83 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="2dp"
     app:strokeWidth="0dp"
-    android:backgroundTint="?attr/colorSurfaceContainerLowest">
+    android:backgroundTint="?attr/colorSurfaceContainerLow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <ImageView
             android:id="@+id/completed_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="4dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/todo"
+            android:padding="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/background_rounded_blue"
             android:src="@drawable/pool"
-            app:tint="@color/white" />
+            />
 
         <TextView
             android:id="@+id/session_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="?android:textColorPrimary"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toEndOf="@id/completed_icon"
+            app:layout_constraintEnd_toStartOf="@id/collapse_icon"
             app:layout_constraintTop_toTopOf="@id/completed_icon"
             android:layout_marginStart="16dp"
             tools:text="Day 01" />
 
         <TextView
             android:id="@+id/session_message"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="8dp"
-            android:textColor="?android:textColorSecondary"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintStart_toStartOf="@id/session_title"
+            app:layout_constraintEnd_toEndOf="@id/session_title"
             app:layout_constraintTop_toBottomOf="@id/session_title"
-            app:layout_constraintBottom_toBottomOf="@id/completed_icon"
             tools:text="900m total" />
 
         <ImageView
             android:id="@+id/collapse_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:contentDescription="@string/todo"
             android:src="@drawable/baseline_arrow_drop_up_24"
+            app:tint="?attr/colorOnSurfaceVariant"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/completed_icon"
             app:layout_constraintBottom_toBottomOf="@id/completed_icon" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:dividerColor="?attr/colorOutlineVariant"
+            app:layout_constraintTop_toBottomOf="@id/completed_icon" />
 
         <TextView
             android:id="@+id/sets_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:lineHeight="24dp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/completed_icon"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:lineSpacingExtra="4dp"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintTop_toBottomOf="@id/divider"
             tools:text="4 × 100m freestyle, 2 × 50m backstroke" />
 
         <ImageView
             android:id="@+id/favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@string/todo"
+            android:padding="4dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/sl_favorite"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sets_view"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:tint="@color/teal_700"
+            app:tint="@color/teal_700"
              />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@ import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.domain.SwimmingWeek
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.time.ZoneId
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -22,6 +22,8 @@ class ViewItemsMapper(
      */
     private val includeOverview: Boolean = true,
 ) {
+    private val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+
     fun mapToViewItems(swimSessionsFlow: Flow<List<SwimSession>>) = swimSessionsFlow.map { mapToViewItems(it) }
 
     suspend fun mapToViewItems(
@@ -31,6 +33,9 @@ class ViewItemsMapper(
         val result = mutableListOf<SwimSessionListItem>()
 
         if (includeOverview) getOverview(swimSessions)?.let { result += it }
+
+        val poolSize = configurationRepository.getPoolSize()
+        val favoriteId = configurationRepository.getFavoriteSessionId()
 
         swimSessions
             .groupBy { it.week.value }
@@ -45,19 +50,30 @@ class ViewItemsMapper(
                                 stringResourcesProvider.getString(R.string.completed),
                     )
 
-                session.value.map { toSwimSessionViewItem(it, expandedIds) }.forEach { sessionViewItem -> result += sessionViewItem }
+                session.value
+                    .map {
+                        toSwimSessionViewItem(
+                            it,
+                            expandedIds,
+                            poolSize,
+                            favoriteId,
+                        )
+                    }.forEach { sessionViewItem -> result += sessionViewItem }
             }
 
         return result
     }
 
-    private fun getOverview(sessions: List<SwimSession>): SwimSessionListItem? {
-        val allSessions = sessions
-        val completedSessions = allSessions.count { it.completed }
-        val nextAvailable = allSessions.firstOrNull { it.completed.not() } ?: return null
+    fun getOverview(sessions: List<SwimSession>): SwimSessionListItem? {
+        val completedSessions = sessions.count { it.completed }
+        val nextAvailable = sessions.firstOrNull { it.completed.not() } ?: return null
 
-        val totalCompletedText = "$completedSessions/${allSessions.size}"
-        val nextAvailableText = "Week ${nextAvailable.week.value}, Day ${nextAvailable.weekPriority}"
+        val totalCompletedText = "$completedSessions/${sessions.size}"
+        val nextAvailableText = "${stringResourcesProvider.getString(R.string.week)} ${nextAvailable.week.value}, ${
+            stringResourcesProvider.getString(
+                R.string.day,
+            )
+        } ${nextAvailable.weekPriority}"
 
         return SwimSessionListItem.ProgressOverviewViewItem(
             totalCompleted = totalCompletedText,
@@ -65,25 +81,31 @@ class ViewItemsMapper(
         )
     }
 
-    suspend fun toSwimSessionViewItem(
+    @VisibleForTesting
+    fun toSwimSessionViewItem(
         session: SwimSession,
         expandedIds: Set<String> = emptySet(),
-    ): SwimSessionListItem.SwimSessionViewItem {
-        val poolSize = configurationRepository.getPoolSize()
-        val favoriteId = configurationRepository.getFavoriteSessionId()
-
-        return SwimSessionListItem.SwimSessionViewItem(
+        poolSize: PoolSize,
+        favoriteId: String?,
+    ): SwimSessionListItem.SwimSessionViewItem =
+        SwimSessionListItem.SwimSessionViewItem(
             id = session.id,
-            title = titleFor(session),
+            title = dayOnlyTitleFor(session),
             message = sessionsCompletedMessaged(session),
             isCompleted = session.completed,
             isFavorite = session.id == favoriteId,
             isExpanded = expandedIds.contains(session.id),
             swimRounds = mapSwimRoundsFor(session.swimSets, poolSize),
         )
-    }
 
-    fun titleFor(session: SwimSession): String =
+    fun weekAndDayTitleFor(session: SwimSession): String =
+        "${stringResourcesProvider.getString(R.string.week)} ${session.week.value}, ${
+            stringResourcesProvider.getString(
+                R.string.day,
+            )
+        } ${session.weekPriority}"
+
+    fun dayOnlyTitleFor(session: SwimSession): String =
         "${stringResourcesProvider.getString(
             R.string.day,
         )} ${((session.weekPriority - 1) % (SwimSession.AVAILABLE_WEEK_PRIORITIES.last)) + 1}"
@@ -117,15 +139,29 @@ class ViewItemsMapper(
         }
     }
 
+    fun totalDistanceForSession(session: SwimSession): String =
+        stringResourcesProvider.getString(R.string.meters_total).format(
+            session.swimSets.sumOf {
+                it.meters * it.count
+            },
+        )
+
+    fun completedAtMessage(session: SwimSession): String =
+        stringResourcesProvider.getString(R.string.completed_at).format(session.completedAt!!.format(dateFormatter))
+
+    fun completedAtMessage(date: OffsetDateTime): String =
+        stringResourcesProvider.getString(R.string.completed_at).format(date.format(dateFormatter))
+
     @VisibleForTesting
-    fun sessionsCompletedMessaged(session: SwimSession): String {
-        if (session.completed) {
-            val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-            return stringResourcesProvider.getString(R.string.completed_at).format(session.completedAt!!.format(formatter))
+    fun sessionsCompletedMessaged(session: SwimSession): String =
+        when {
+            session.completed -> {
+                require(session.completedAt != null) { "Session cannot be completed and have null completedAt property" }
+                completedAtMessage(session)
+            }
+
+            else -> {
+                totalDistanceForSession(session)
+            }
         }
-
-        return stringResourcesProvider.getString(R.string.meters_total).format(session.swimSets.sumOf { it.meters * it.count })
-    }
-
-    private fun SwimmingSet.toViewItemEntry(): String = this.toString()
 }

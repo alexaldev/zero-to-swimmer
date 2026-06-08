@@ -1,13 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.junit5)
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
     namespace = "com.alexallafi.app.data"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26
@@ -25,13 +24,10 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlin {
-        jvmToolchain(17)
-    }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -50,6 +46,7 @@ dependencies {
     testImplementation(libs.junit5.params)
     testImplementation(libs.mockk)
     testImplementation(libs.assertk)
+    testImplementation(libs.coroutines.test)
 
     androidTestImplementation(libs.junit5.api)
     androidTestImplementation(libs.junit5.engine)

@@ -22,4 +22,9 @@ interface SwimSessionsRepository {
     suspend fun numberOfWeeks(): Int
 
     suspend fun getById(id: String): SwimSession?
+
+    /**
+     * Clears all data in the repository. Resets all [SwimSession] completed related properties
+     */
+    suspend fun clearAll()
 }
