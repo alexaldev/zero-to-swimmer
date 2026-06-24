@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.junit5)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -26,6 +27,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 }
 
@@ -41,6 +43,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.viewBindingDelegate)
     implementation(libs.material)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.livedata)
     implementation(libs.koin.android)

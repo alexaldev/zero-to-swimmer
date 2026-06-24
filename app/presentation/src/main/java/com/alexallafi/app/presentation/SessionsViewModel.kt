@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.alexallafi.app.domain.ConfigurationRepository
+import com.alexallafi.app.domain.HistoryRepository
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.presentation.SwimSessionListItem.SwimSessionViewItem
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class SessionsViewModel(
     private val sessionsRepository: SwimSessionsRepository,
+    private val historyRepository: HistoryRepository,
     private val viewItemsMapper: ViewItemsMapper,
     private val configurationRepository: ConfigurationRepository,
     private val memoryStateHandle: SavedStateHandle,
@@ -54,7 +56,16 @@ class SessionsViewModel(
 
             is SwimSessionAction.CompletedToggled -> {
                 val selectedSession = action.sessionViewItem as? SwimSessionViewItem ?: return
-                viewModelScope.launch { sessionsRepository.toggleCompleted(selectedSession.id) }
+                viewModelScope.launch {
+                    sessionsRepository.toggleCompleted(selectedSession.id)
+                    sessionsRepository.getById(selectedSession.id)?.let { updated ->
+                        if (updated.completed) {
+                            historyRepository.addSession(updated)
+                        } else {
+                            historyRepository.removeSessionBySessionId(updated.id)
+                        }
+                    }
+                }
             }
 
             SwimSessionAction.ScrollToNextAvailable -> {

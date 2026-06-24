@@ -13,5 +13,7 @@ interface HistoryRepository {
 
     suspend fun addSessions(sessions: List<SwimSession>)
 
+    suspend fun removeSessionBySessionId(swimSessionId: String)
+
     suspend fun clearAll()
 }

@@ -1,45 +1,28 @@
 package com.alexallafi.app.presentation.history
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.isVisible
+import android.view.ViewGroup
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.alexallafi.app.presentation.R
-import com.alexallafi.app.presentation.databinding.FragmentHistoryBinding
-import kotlinx.coroutines.launch
+import com.alexallafi.app.presentation.history.compose.HistoryScreen
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HistoryFragment : Fragment(R.layout.fragment_history) {
-    private val viewBinding by viewBinding(FragmentHistoryBinding::bind)
+class HistoryFragment : Fragment() {
     private val viewModel: HistoryViewModel by viewModel()
-    private val historyAdapter = HistoryAdapter()
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupRecyclerView()
-        observeViewModel()
-    }
-
-    private fun setupRecyclerView() {
-        viewBinding.rvHistory.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = historyAdapter
-        }
-    }
-
-    private fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.historyItems.collect { items ->
-                historyAdapter.submitList(items)
-                viewBinding.tvEmptyHistory.isVisible = items.isEmpty()
-                viewBinding.rvHistory.isVisible = items.isNotEmpty()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                MaterialTheme {
+                    HistoryScreen(viewModel)
+                }
             }
         }
     }
