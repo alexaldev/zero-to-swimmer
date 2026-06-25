@@ -22,6 +22,7 @@ dependencies {
     testImplementation(libs.junit5.engine)
     testRuntimeOnly(libs.junit5.launcher)
     testImplementation(libs.mockk)
+    testImplementation(libs.assertk)
 }
 
 tasks.test {

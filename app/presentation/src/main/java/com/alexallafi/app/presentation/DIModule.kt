@@ -3,6 +3,7 @@ package com.alexallafi.app.presentation
 import com.alexallafi.app.domain.usecase.CompleteSessionUseCase
 import com.alexallafi.app.domain.usecase.GetNextAvailableSessionUseCase
 import com.alexallafi.app.domain.usecase.SeeFavoriteSessionUseCase
+import com.alexallafi.app.domain.usecase.ViewHistoryUseCase
 import com.alexallafi.app.presentation.history.HistoryViewModel
 import com.alexallafi.app.presentation.nextSession.NextSessionViewModel
 import com.alexallafi.app.presentation.settings.SettingsViewModel
@@ -24,4 +25,5 @@ val presentationModule =
         factoryOf(::SeeFavoriteSessionUseCase)
         factoryOf(::GetNextAvailableSessionUseCase)
         factoryOf(::CompleteSessionUseCase)
+        factoryOf(::ViewHistoryUseCase)
     }
