@@ -7,6 +7,8 @@ import com.alexallafi.app.domain.SwimSession
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.domain.SwimmingWeek
+import com.alexallafi.app.presentation.nextSession.FavoriteSessionViewItem
+import com.alexallafi.app.presentation.nextSession.NextSessionViewItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.OffsetDateTime
@@ -164,4 +166,26 @@ class ViewItemsMapper(
                 totalDistanceForSession(session)
             }
         }
+
+    suspend fun mapSessionToFavoriteViewItem(session: SwimSession): FavoriteSessionViewItem {
+        val sessionIdText = weekAndDayTitleFor(session)
+        val setsText = mapSwimRoundsFor(session.swimSets, configurationRepository.getPoolSize())
+        return FavoriteSessionViewItem("$sessionIdText\n$setsText")
+    }
+
+    suspend fun mapSessionToNextViewItem(
+        session: SwimSession,
+        isConfirming: Boolean,
+    ): NextSessionViewItem =
+        NextSessionViewItem(
+            id = session.id,
+            sessionTitle = weekAndDayTitleFor(session),
+            sessionSetsText =
+                mapSwimRoundsFor(
+                    session.swimSets,
+                    configurationRepository.getPoolSize(),
+                ),
+            totalDistanceText = totalDistanceForSession(session),
+            showConfirmState = isConfirming,
+        )
 }

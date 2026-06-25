@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.splashscreen)
     implementation(libs.koin.test)
+    implementation(libs.kotlinResult)
+    implementation(libs.kotlinResult.coroutines)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

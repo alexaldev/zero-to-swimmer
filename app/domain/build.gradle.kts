@@ -14,4 +14,16 @@ kotlin {
 
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinResult)
+    implementation(libs.kotlinResult.coroutines)
+
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.junit5.api)
+    testImplementation(libs.junit5.engine)
+    testRuntimeOnly(libs.junit5.launcher)
+    testImplementation(libs.mockk)
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
