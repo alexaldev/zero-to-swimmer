@@ -15,6 +15,7 @@ espressoCore = "3.7.0"
 ksp = "2.3.7"
 appcompat = "1.7.1"
 koin = "4.2.1"
+kotlinResult = "2.3.1"
 room = "2.8.4"
 material = "1.14.0"
 jetbrainsKotlinJvm = "2.3.21"
@@ -50,12 +51,16 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin"
 koin-test = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin"}
 viewBindingDelegate = { module = "com.github.kirich1409:viewbindingpropertydelegate-noreflection", version.ref = "viewBindingDelegate"}
 splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen"}
+kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
+kotlinResult-coroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }
+
 
 # Testing
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
 junit5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
 junit5-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
 junit5-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
+junit5-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit5" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
