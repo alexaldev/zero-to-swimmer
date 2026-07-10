@@ -56,6 +56,8 @@ dependencies {
     testImplementation(libs.junit5.params)
     testImplementation(libs.mockk)
     testImplementation(libs.assertk)
+    implementation(libs.kotlinResult)
+    implementation(libs.kotlinResult.coroutines)
 
     androidTestImplementation(libs.junit5.api)
     androidTestImplementation(libs.junit5.engine)
