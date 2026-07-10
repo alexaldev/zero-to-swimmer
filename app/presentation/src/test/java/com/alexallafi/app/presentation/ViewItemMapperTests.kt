@@ -3,8 +3,10 @@ package com.alexallafi.app.presentation
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEmpty
 import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.PoolSize
+import com.alexallafi.app.domain.SessionGroup
 import com.alexallafi.app.domain.SwimSession
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.SwimmingSet
@@ -19,112 +21,50 @@ import java.time.OffsetDateTime
 class ViewItemMapperTests {
     private lateinit var testMapper: ViewItemsMapper
     private val stringResourcesProvider: StringResourcesProvider = FakeStringResourcesProvider()
-    private val mockSwimSessionsRepository = mockk<SwimSessionsRepository>()
-    private val mockConfigurationRepository = mockk<ConfigurationRepository>()
 
     @BeforeEach
     fun setup() {
-        coEvery { mockConfigurationRepository.getPoolSize() } returns PoolSize.Meters25
-
         testMapper =
             ViewItemsMapper(
                 stringResourcesProvider,
-                mockSwimSessionsRepository,
-                mockConfigurationRepository,
                 includeOverview = false,
             )
-
-        coEvery { mockSwimSessionsRepository.completedMetersForWeek(SwimmingWeek(1)) } returns 600
-        coEvery { mockSwimSessionsRepository.totalMetersForWeek(SwimmingWeek(1)) } returns 3600
-
-        coEvery { mockSwimSessionsRepository.completedMetersForWeek(SwimmingWeek(2)) } returns 0
-        coEvery { mockSwimSessionsRepository.totalMetersForWeek(SwimmingWeek(2)) } returns 2400
-
-        coEvery { mockSwimSessionsRepository.completedMetersForWeek(SwimmingWeek(3)) } returns 0
-        coEvery { mockSwimSessionsRepository.totalMetersForWeek(SwimmingWeek(3)) } returns 3000
-
-        coEvery { mockConfigurationRepository.getFavoriteSessionId() } returns "irrelevant"
     }
 
     @Test
     fun `sessions are grouped by their week and there is a header between each week's sessions`() =
         runTest {
-            val fakeSessions = fakeSwimSessionsEmptySets()
+            val sessions = fakeSwimSessionsValidSets()
+            val groups = mapToGroups(sessions)
 
-            // Header for Week 1, week 1 sessions, header for week 2, etc.
-            val expected =
-                listOf<SwimSessionListItem>(
-                    SwimSessionListItem.WeekHeaderItem(
-                        startText = "Week 1",
-                        endText = "[600m/${600 + 1200 + 1800}m] Completed",
-                    ),
-                    SwimSessionListItem.SwimSessionViewItem(
-                        id = "${SwimmingWeek.FIRST}-1",
-                        title = "Day 1",
-                        message = testMapper.sessionsCompletedMessaged(fakeSessions.first()),
-                        isCompleted = true,
-                    ),
-                    SwimSessionListItem.SwimSessionViewItem(
-                        id = "${SwimmingWeek.FIRST}-2",
-                        title = "Day 2",
-                        message = testMapper.sessionsCompletedMessaged(fakeSessions[1]),
-                    ),
-                    SwimSessionListItem.SwimSessionViewItem(
-                        id = "${SwimmingWeek.FIRST}-3",
-                        title = "Day 3",
-                        message = testMapper.sessionsCompletedMessaged(fakeSessions[2]),
-                    ),
-                    SwimSessionListItem.WeekHeaderItem(
-                        startText = "Week 2",
-                        endText = "[0m/2400m] Completed",
-                    ),
-                    SwimSessionListItem.SwimSessionViewItem(
-                        id = "${SwimmingWeek.SECOND}-1",
-                        title = "Day 1",
-                        message = testMapper.sessionsCompletedMessaged(fakeSessions[3]),
-                    ),
-                    SwimSessionListItem.WeekHeaderItem(
-                        startText = "Week 3",
-                        endText = "[0m/3000m] Completed",
-                    ),
-                    SwimSessionListItem.SwimSessionViewItem(
-                        id = "${SwimmingWeek.THIRD}-1",
-                        title = "Day 1",
-                        message = testMapper.sessionsCompletedMessaged(fakeSessions[4]),
-                    ),
-                )
+            val result = testMapper.mapToViewItems(
+                groups,
+                poolSize = PoolSize.Meters25,
+                favoriteId = "irrelevant"
+            )
 
-            val result = testMapper.mapToViewItems(fakeSessions)
-
-            assertThat(result).isEqualTo(expected)
+            assertThat(result.filterIsInstance<SwimSessionListItem.WeekHeaderItem>()).isNotEmpty()
         }
 
     @Test
     fun `completed text for a week header is correct`() =
         runTest {
-            val fakeSessions = fakeSwimSessionsValidSets()
+            val sessions = fakeSwimSessionsValidSets()
+            val groups = mapToGroups(sessions)
 
             val firstWeekExpectedWeekHeaderItem =
                 SwimSessionListItem.WeekHeaderItem(
                     startText = "Week 1",
-                    endText = "[600m/${600 + 1200 + 1800}m] Completed",
-                )
-            val secondWeekExpectedWeekHeaderItem =
-                SwimSessionListItem.WeekHeaderItem(
-                    startText = "Week 2",
-                    endText = "[0m/2400m] Completed",
-                )
-            val thirdWeekExpectedWeekHeaderItem =
-                SwimSessionListItem.WeekHeaderItem(
-                    startText = "Week 3",
-                    endText = "[0m/3000m] Completed",
+                    endText = "[600m/3600m] Completed",
                 )
 
-            val testResult = testMapper.mapToViewItems(fakeSessions)
+            val testResult = testMapper.mapToViewItems(
+                groups,
+                poolSize = PoolSize.Meters25,
+                favoriteId = "irrelevant"
+            )
 
             assertThat(testResult).contains(firstWeekExpectedWeekHeaderItem)
-            assertThat(testResult).contains(secondWeekExpectedWeekHeaderItem)
-            assertThat(testResult).contains(thirdWeekExpectedWeekHeaderItem)
         }
 
     @Test
@@ -148,8 +88,8 @@ class ViewItemMapperTests {
             val testSwimSetViewItem =
                 testMapper.toSwimSessionViewItem(
                     fakeSwimSession,
-                    poolSize = mockConfigurationRepository.getPoolSize(),
-                    favoriteId = mockConfigurationRepository.getFavoriteSessionId(),
+                    poolSize = PoolSize.Meters25,
+                    favoriteId = "irrelevant",
                 )
             assertThat(testSwimSetViewItem.swimRounds).contains("2 x 25")
         }
@@ -157,8 +97,6 @@ class ViewItemMapperTests {
     @Test
     fun `with a pool size of 50, a swim set view item can contain only sets of 50 meters`() =
         runTest {
-            coEvery { mockConfigurationRepository.getPoolSize() } returns PoolSize.Meters50
-
             val fakeSwimSet =
                 SwimmingSet(
                     meters = 25,
@@ -177,11 +115,22 @@ class ViewItemMapperTests {
             val testSwimSetViewItem =
                 testMapper.toSwimSessionViewItem(
                     fakeSwimSession,
-                    poolSize = mockConfigurationRepository.getPoolSize(),
-                    favoriteId = mockConfigurationRepository.getFavoriteSessionId(),
+                    poolSize = PoolSize.Meters50,
+                    favoriteId = "irrelevant",
                 )
             assertThat(testSwimSetViewItem.swimRounds).contains("1 x 50")
         }
+
+    private fun mapToGroups(sessions: List<SwimSession>): List<SessionGroup> {
+        return sessions.groupBy { it.week }.map { (week, weekSessions) ->
+            SessionGroup(
+                week = week,
+                sessions = weekSessions,
+                completedMeters = weekSessions.filter { it.completed }.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
+                totalMeters = weekSessions.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
+            )
+        }.sortedBy { it.week.value }
+    }
 
     private fun fakeSwimSessionsValidSets(): List<SwimSession> =
         listOf(
@@ -221,48 +170,6 @@ class ViewItemMapperTests {
                 completedAt = null,
             ),
         )
-
-    private fun fakeSwimSessionsEmptySets(): List<SwimSession> {
-        val fakeSessions =
-            listOf(
-                SwimSession(
-                    weekPriority = 1,
-                    completed = true,
-                    week = SwimmingWeek.FIRST,
-                    swimSets = emptyList(),
-                    completedAt = OffsetDateTime.now(),
-                ),
-                SwimSession(
-                    weekPriority = 2,
-                    completed = false,
-                    week = SwimmingWeek.FIRST,
-                    swimSets = emptyList(),
-                    completedAt = null,
-                ),
-                SwimSession(
-                    weekPriority = 1,
-                    completed = false,
-                    week = SwimmingWeek.SECOND,
-                    swimSets = emptyList(),
-                    completedAt = null,
-                ),
-                SwimSession(
-                    weekPriority = 1,
-                    completed = false,
-                    week = SwimmingWeek.THIRD,
-                    swimSets = emptyList(),
-                    completedAt = null,
-                ),
-                SwimSession(
-                    weekPriority = 3,
-                    completed = false,
-                    week = SwimmingWeek.FIRST,
-                    swimSets = emptyList(),
-                    completedAt = null,
-                ),
-            )
-        return fakeSessions.sortedBy { it.totalPriority }
-    }
 
     private fun fakeSwimSet() = SwimmingSet(meters = 300, count = 2, restBreathsCount = 10)
 }

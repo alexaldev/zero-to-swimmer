@@ -12,4 +12,6 @@ interface ConfigurationRepository {
     suspend fun getFavoriteSessionId(): String?
 
     fun observeFavoriteSession(): Flow<String?>
+
+    fun observePoolSize(): Flow<PoolSize>
 }

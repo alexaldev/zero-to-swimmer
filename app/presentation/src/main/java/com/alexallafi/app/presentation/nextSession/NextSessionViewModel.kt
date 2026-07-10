@@ -3,65 +3,51 @@ package com.alexallafi.app.presentation.nextSession
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexallafi.app.domain.ConfigurationRepository
-import com.alexallafi.app.domain.HistoryRepository
-import com.alexallafi.app.domain.SwimSessionsRepository
-import com.alexallafi.app.presentation.SwimSessionListItem
+import com.alexallafi.app.domain.usecase.CompleteSessionUseCase
+import com.alexallafi.app.domain.usecase.GetNextAvailableSessionUseCase
+import com.alexallafi.app.domain.usecase.SeeFavoriteSessionUseCase
 import com.alexallafi.app.presentation.ViewItemsMapper
+import com.github.michaelbull.result.mapBoth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class NextSessionViewModel(
-    private val swimSessionsRepository: SwimSessionsRepository,
-    private val configRepository: ConfigurationRepository,
-    private val historyRepository: HistoryRepository,
     private val viewItemsMapper: ViewItemsMapper,
+    private val configurationRepository: ConfigurationRepository,
+    seeFavoriteSessionUseCase: SeeFavoriteSessionUseCase,
+    getNextAvailableSessionUseCase: GetNextAvailableSessionUseCase,
+    private val completeSessionUseCase: CompleteSessionUseCase,
 ) : ViewModel() {
     private val confirmingSessionId = MutableStateFlow<String?>(null)
 
     val favoriteViewItem: StateFlow<FavoriteSessionViewItem> =
         combine(
-            swimSessionsRepository.observeAll(),
-            configRepository.observeFavoriteSession(),
-        ) { sessions, favoriteId ->
-            val favoriteSession = sessions.find { it.id == favoriteId }
-            val favoriteText =
-                favoriteSession?.let {
-                    val sessionIdText = viewItemsMapper.weekAndDayTitleFor(it)
-                    val setsText = viewItemsMapper.mapSwimRoundsFor(it.swimSets, configRepository.getPoolSize())
-                    "$sessionIdText\n$setsText"
-                } ?: "-"
-            FavoriteSessionViewItem(favoriteText)
+            seeFavoriteSessionUseCase.observe(),
+            configurationRepository.observePoolSize()
+        ) { favoriteResult, poolSize ->
+            favoriteResult.mapBoth(
+                success = { viewItemsMapper.mapSessionToFavoriteViewItem(it, poolSize) },
+                failure = { FavoriteSessionViewItem("-") },
+            )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FavoriteSessionViewItem("-"))
 
     val nextViewItem: StateFlow<NextSessionViewItem> =
         combine(
-            swimSessionsRepository.observeAll(),
+            getNextAvailableSessionUseCase.observe(),
             confirmingSessionId,
-        ) { sessions, confirmingId ->
-            val nextAvailableSession = sessions.firstOrNull { !it.completed }
-            nextAvailableSession ?: return@combine NextSessionViewItem()
-
-            val nextAvailableText =
-                viewItemsMapper.mapSwimRoundsFor(
-                    nextAvailableSession.swimSets,
-                    configRepository.getPoolSize(),
-                )
-
-            val totalDistanceText = viewItemsMapper.totalDistanceForSession(nextAvailableSession)
-
-            val isConfirming = confirmingId == nextAvailableSession.id
-
-            NextSessionViewItem(
-                id = nextAvailableSession.id,
-                sessionTitle = viewItemsMapper.weekAndDayTitleFor(nextAvailableSession),
-                sessionSetsText = nextAvailableText,
-                totalDistanceText = totalDistanceText,
-                showConfirmState = isConfirming,
+            configurationRepository.observePoolSize()
+        ) { nextResult, confirmingId, poolSize ->
+            nextResult.mapBoth(
+                success = { nextAvailableSession ->
+                    viewItemsMapper.mapSessionToNextViewItem(nextAvailableSession, poolSize, confirmingId == nextAvailableSession.id)
+                },
+                failure = { NextSessionViewItem() },
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NextSessionViewItem())
 
@@ -74,9 +60,8 @@ class NextSessionViewModel(
             UserAction.ConfirmCompletion -> {
                 val sessionId = confirmingSessionId.value ?: return
                 viewModelScope.launch {
-                    swimSessionsRepository.toggleCompleted(sessionId)
+                    completeSessionUseCase.invoke(sessionId)
                     confirmingSessionId.value = null
-                    saveSessionInHistory(sessionId)
                 }
             }
 
@@ -84,11 +69,6 @@ class NextSessionViewModel(
                 confirmingSessionId.value = null
             }
         }
-    }
-
-    private suspend fun saveSessionInHistory(sessionId: String) {
-        val swimSession = swimSessionsRepository.getById(sessionId) ?: return // TODO
-        historyRepository.addSession(swimSession)
     }
 }
 

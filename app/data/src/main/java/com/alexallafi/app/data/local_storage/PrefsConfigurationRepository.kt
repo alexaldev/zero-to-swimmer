@@ -33,6 +33,19 @@ class PrefsConfigurationRepository(
         }.onStart { emit(sessionPrefs.getString("favoriteSession", null)) }
             .buffer(Channel.UNLIMITED)
 
+    override fun observePoolSize(): Flow<PoolSize> =
+        callbackFlow {
+            val listener =
+                SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+                    if (key == "poolSize") {
+                        trySend(PoolSize.fromInt(prefs.getInt("poolSize", 50)))
+                    }
+                }
+            sessionPrefs.registerOnSharedPreferenceChangeListener(listener)
+            awaitClose { sessionPrefs.unregisterOnSharedPreferenceChangeListener(listener) }
+        }.onStart { emit(PoolSize.fromInt(sessionPrefs.getInt("poolSize", 50))) }
+            .buffer(Channel.UNLIMITED)
+
     override suspend fun setPoolSize(size: PoolSize) {
         withContext(ioDispatcher) {
             sessionPrefs.edit { putInt("poolSize", size.toIntValue()) }
