@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 
 @Composable
 fun HistoryScreenRoot(viewModel: HistoryViewModel) {
@@ -65,7 +66,7 @@ fun HistoryScreen(
 @Preview
 @Composable
 fun HistoryScreenPreview() {
-    MaterialTheme {
+    ZeroToSwimmerTheme {
         HistoryScreen(
             listOf(
                 HistoryListItem.MonthHeader("January 2023"),
@@ -131,7 +132,7 @@ fun HistorySessionItem(item: HistoryListItem.SessionItem) {
 @Preview
 @Composable
 fun MonthHeaderItemPreview() {
-    MaterialTheme {
+    ZeroToSwimmerTheme {
         MonthHeaderItem("January 2023")
     }
 }
@@ -139,7 +140,7 @@ fun MonthHeaderItemPreview() {
 @Preview
 @Composable
 fun HistorySessionItemPreview() {
-    MaterialTheme {
+    ZeroToSwimmerTheme {
         HistorySessionItem(
             item =
                 HistoryListItem.SessionItem(

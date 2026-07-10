@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HistoryFragment : Fragment() {
@@ -15,14 +16,13 @@ class HistoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
+        savedInstanceState: Bundle?,
+    ): View =
+        ComposeView(requireContext()).apply {
             setContent {
-                MaterialTheme {
+                ZeroToSwimmerTheme {
                     HistoryScreenRoot(viewModel)
                 }
             }
         }
-    }
 }
