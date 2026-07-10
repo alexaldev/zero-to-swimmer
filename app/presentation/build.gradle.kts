@@ -37,6 +37,7 @@ kotlin {
 
 dependencies {
 
+    implementation(libs.androidx.compose.foundation)
     implementation(projects.app.domain)
 
     implementation(libs.androidx.core.ktx)
@@ -49,6 +50,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata)
     implementation(libs.koin.android)
     implementation(libs.koin.core)
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
 
     testImplementation(libs.coroutines.test)
     testImplementation(libs.junit5.api)

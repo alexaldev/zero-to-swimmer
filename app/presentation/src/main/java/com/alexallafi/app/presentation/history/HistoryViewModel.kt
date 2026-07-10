@@ -37,7 +37,8 @@ class HistoryViewModel(
                                     val session = swimSessionsRepository.getById(entry.swimSessionId)
                                     listItems.add(
                                         HistoryListItem.SessionItem(
-                                            id = entry.swimSessionId,
+                                            entryId = entry.id,
+                                            sessionId = entry.swimSessionId,
                                             sessionTitle = if (session != null) viewItemsMapper.weekAndDayTitleFor(session) else "",
                                             completedAt = viewItemsMapper.completedAtMessage(entry.completedAt),
                                         ),
