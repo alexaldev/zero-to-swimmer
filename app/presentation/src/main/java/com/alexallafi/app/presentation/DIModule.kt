@@ -4,6 +4,7 @@ import com.alexallafi.app.domain.usecase.CompleteSessionUseCase
 import com.alexallafi.app.domain.usecase.GetNextAvailableSessionUseCase
 import com.alexallafi.app.domain.usecase.SeeFavoriteSessionUseCase
 import com.alexallafi.app.domain.usecase.ViewHistoryUseCase
+import com.alexallafi.app.domain.usecase.ViewProgramUseCase
 import com.alexallafi.app.presentation.history.HistoryViewModel
 import com.alexallafi.app.presentation.nextSession.NextSessionViewModel
 import com.alexallafi.app.presentation.settings.SettingsViewModel
@@ -20,10 +21,11 @@ val presentationModule =
         viewModelOf(::HistoryViewModel)
         viewModelOf(::SettingsViewModel)
         singleOf(::AndroidStringProvider) bind StringResourcesProvider::class
-        factory { ViewItemsMapper(get(), get(), get(), includeOverview = false) }
+        factory { ViewItemsMapper(get(), includeOverview = false) }
 
         factoryOf(::SeeFavoriteSessionUseCase)
         factoryOf(::GetNextAvailableSessionUseCase)
         factoryOf(::CompleteSessionUseCase)
         factoryOf(::ViewHistoryUseCase)
+        factoryOf(::ViewProgramUseCase)
     }

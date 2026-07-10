@@ -3,6 +3,7 @@ package com.alexallafi.app.presentation
 import androidx.annotation.VisibleForTesting
 import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.PoolSize
+import com.alexallafi.app.domain.SessionGroup
 import com.alexallafi.app.domain.SwimSession
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.SwimmingSet
@@ -17,8 +18,6 @@ import java.time.format.FormatStyle
 
 class ViewItemsMapper(
     private val stringResourcesProvider: StringResourcesProvider,
-    private val swimSessionsRepository: SwimSessionsRepository,
-    private val configurationRepository: ConfigurationRepository,
     /**
      * Flag to enable/disable the overview item when mapping
      */
@@ -26,42 +25,35 @@ class ViewItemsMapper(
 ) {
     private val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 
-    fun mapToViewItems(swimSessionsFlow: Flow<List<SwimSession>>) = swimSessionsFlow.map { mapToViewItems(it) }
-
-    suspend fun mapToViewItems(
-        swimSessions: List<SwimSession>,
+    fun mapToViewItems(
+        sessionGroups: List<SessionGroup>,
+        poolSize: PoolSize,
+        favoriteId: String?,
         expandedIds: Set<String> = emptySet(),
     ): List<SwimSessionListItem> {
         val result = mutableListOf<SwimSessionListItem>()
 
-        if (includeOverview) getOverview(swimSessions)?.let { result += it }
+        val allSessions = sessionGroups.flatMap { it.sessions }
+        if (includeOverview) getOverview(allSessions)?.let { result += it }
 
-        val poolSize = configurationRepository.getPoolSize()
-        val favoriteId = configurationRepository.getFavoriteSessionId()
+        sessionGroups.forEach { group ->
+            result +=
+                SwimSessionListItem.WeekHeaderItem(
+                    startText = "${stringResourcesProvider.getString(R.string.week)} ${group.week.value}",
+                    endText = "[${group.completedMeters}m/${group.totalMeters}m] " +
+                        stringResourcesProvider.getString(R.string.completed),
+                )
 
-        swimSessions
-            .groupBy { it.week.value }
-            .map { session ->
-
-                result +=
-                    SwimSessionListItem.WeekHeaderItem(
-                        startText = "${stringResourcesProvider.getString(R.string.week)} ${session.key}",
-                        endText =
-                            "[${swimSessionsRepository.completedMetersForWeek(SwimmingWeek(session.key))}m/" +
-                                "${swimSessionsRepository.totalMetersForWeek(SwimmingWeek(session.key))}m] " +
-                                stringResourcesProvider.getString(R.string.completed),
+            group.sessions
+                .map {
+                    toSwimSessionViewItem(
+                        it,
+                        expandedIds,
+                        poolSize,
+                        favoriteId,
                     )
-
-                session.value
-                    .map {
-                        toSwimSessionViewItem(
-                            it,
-                            expandedIds,
-                            poolSize,
-                            favoriteId,
-                        )
-                    }.forEach { sessionViewItem -> result += sessionViewItem }
-            }
+                }.forEach { sessionViewItem -> result += sessionViewItem }
+        }
 
         return result
     }
@@ -167,14 +159,18 @@ class ViewItemsMapper(
             }
         }
 
-    suspend fun mapSessionToFavoriteViewItem(session: SwimSession): FavoriteSessionViewItem {
+    fun mapSessionToFavoriteViewItem(
+        session: SwimSession,
+        poolSize: PoolSize,
+    ): FavoriteSessionViewItem {
         val sessionIdText = weekAndDayTitleFor(session)
-        val setsText = mapSwimRoundsFor(session.swimSets, configurationRepository.getPoolSize())
+        val setsText = mapSwimRoundsFor(session.swimSets, poolSize)
         return FavoriteSessionViewItem("$sessionIdText\n$setsText")
     }
 
-    suspend fun mapSessionToNextViewItem(
+    fun mapSessionToNextViewItem(
         session: SwimSession,
+        poolSize: PoolSize,
         isConfirming: Boolean,
     ): NextSessionViewItem =
         NextSessionViewItem(
@@ -183,7 +179,7 @@ class ViewItemsMapper(
             sessionSetsText =
                 mapSwimRoundsFor(
                     session.swimSets,
-                    configurationRepository.getPoolSize(),
+                    poolSize,
                 ),
             totalDistanceText = totalDistanceForSession(session),
             showConfirmState = isConfirming,

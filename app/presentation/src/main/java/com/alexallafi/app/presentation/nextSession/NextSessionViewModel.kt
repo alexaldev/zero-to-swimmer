@@ -2,6 +2,7 @@ package com.alexallafi.app.presentation.nextSession
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.usecase.CompleteSessionUseCase
 import com.alexallafi.app.domain.usecase.GetNextAvailableSessionUseCase
 import com.alexallafi.app.domain.usecase.SeeFavoriteSessionUseCase
@@ -11,12 +12,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class NextSessionViewModel(
     private val viewItemsMapper: ViewItemsMapper,
+    private val configurationRepository: ConfigurationRepository,
     seeFavoriteSessionUseCase: SeeFavoriteSessionUseCase,
     getNextAvailableSessionUseCase: GetNextAvailableSessionUseCase,
     private val completeSessionUseCase: CompleteSessionUseCase,
@@ -24,23 +27,25 @@ class NextSessionViewModel(
     private val confirmingSessionId = MutableStateFlow<String?>(null)
 
     val favoriteViewItem: StateFlow<FavoriteSessionViewItem> =
-        seeFavoriteSessionUseCase
-            .observe()
-            .map { favoriteResult ->
-                favoriteResult.mapBoth(
-                    success = { viewItemsMapper.mapSessionToFavoriteViewItem(it) },
-                    { FavoriteSessionViewItem("-") },
-                )
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FavoriteSessionViewItem("-"))
+        combine(
+            seeFavoriteSessionUseCase.observe(),
+            configurationRepository.observePoolSize()
+        ) { favoriteResult, poolSize ->
+            favoriteResult.mapBoth(
+                success = { viewItemsMapper.mapSessionToFavoriteViewItem(it, poolSize) },
+                failure = { FavoriteSessionViewItem("-") },
+            )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FavoriteSessionViewItem("-"))
 
     val nextViewItem: StateFlow<NextSessionViewItem> =
         combine(
             getNextAvailableSessionUseCase.observe(),
             confirmingSessionId,
-        ) { nextResult, confirmingId ->
+            configurationRepository.observePoolSize()
+        ) { nextResult, confirmingId, poolSize ->
             nextResult.mapBoth(
                 success = { nextAvailableSession ->
-                    viewItemsMapper.mapSessionToNextViewItem(nextAvailableSession, confirmingId == nextAvailableSession.id)
+                    viewItemsMapper.mapSessionToNextViewItem(nextAvailableSession, poolSize, confirmingId == nextAvailableSession.id)
                 },
                 failure = { NextSessionViewItem() },
             )

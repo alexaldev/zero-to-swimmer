@@ -6,37 +6,39 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.SwimSessionsRepository
+import com.alexallafi.app.domain.usecase.ViewProgramUseCase
 import com.alexallafi.app.presentation.SwimSessionListItem.SwimSessionViewItem
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.github.michaelbull.result.mapBoth
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class SessionsViewModel(
     private val sessionsRepository: SwimSessionsRepository,
     private val viewItemsMapper: ViewItemsMapper,
     private val configurationRepository: ConfigurationRepository,
     private val memoryStateHandle: SavedStateHandle,
+    private val viewProgramUseCase: ViewProgramUseCase,
 ) : ViewModel() {
-    private val _sessionsViewItems: MutableStateFlow<List<SwimSessionListItem>> =
-        MutableStateFlow(emptyList())
-    val sessionsViewItems = _sessionsViewItems.asLiveData()
-
     private val expandedSessionIds =
         memoryStateHandle.getStateFlow<Set<String>>(EXPANDED_IDS_KEY, emptySet())
 
-    init {
+    private val _sessionsViewItems =
         combine(
-            sessionsRepository.observeAll(),
+            viewProgramUseCase.observe(),
             configurationRepository.observeFavoriteSession(),
+            configurationRepository.observePoolSize(),
             expandedSessionIds,
-        ) { sessions, _, expandedIds ->
-            viewItemsMapper.mapToViewItems(sessions, expandedIds)
-        }.onEach {
-            _sessionsViewItems.value = it
-        }.launchIn(viewModelScope)
-    }
+        ) { sessions, favoriteId, poolSize, expandedIds ->
+            sessions.mapBoth(
+                success = { viewItemsMapper.mapToViewItems(it, poolSize, favoriteId, expandedIds) },
+                failure = { emptyList() },
+            )
+        }.stateIn(viewModelScope, WhileSubscribed(5.seconds.inWholeMilliseconds), emptyList())
+
+    val sessionsViewItems = _sessionsViewItems.asLiveData()
 
     fun nextAvailableSessionPosition(): Int =
         this._sessionsViewItems.value
