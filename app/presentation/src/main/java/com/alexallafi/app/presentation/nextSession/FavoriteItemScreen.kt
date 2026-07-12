@@ -20,13 +20,13 @@ import com.alexallafi.app.presentation.R
 import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 
 @Composable
-fun FavoriteItemScreenRoot(viewModel: NextSessionViewModel) {
+fun FavoriteItemCardRoot(viewModel: NextSessionViewModel) {
     val items by viewModel.favoriteViewItem.collectAsState()
-    FavoriteItemScreen(items)
+    FavoriteItemCard(items)
 }
 
 @Composable
-fun FavoriteItemScreen(
+fun FavoriteItemCard(
     item: FavoriteSessionViewItem,
     modifier: Modifier = Modifier,
 ) {
@@ -60,9 +60,9 @@ fun FavoriteItemScreen(
 
 @Preview
 @Composable
-fun FavoriteItemScreenPreview() {
+fun FavoriteItemCardPreview() {
     ZeroToSwimmerTheme {
-        FavoriteItemScreen(
+        FavoriteItemCard(
             FavoriteSessionViewItem(
                 "1x200, rest for 12 breathes between 200m\n1x200, " +
                     "rest for 12 breathes between 200m\n1x200, rest for 12 breathes between 200m",

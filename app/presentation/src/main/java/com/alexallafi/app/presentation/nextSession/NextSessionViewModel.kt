@@ -80,10 +80,3 @@ sealed interface UserAction {
     data object CancelCompletion : UserAction
 }
 
-data class NextSessionViewItem(
-    val id: String = "",
-    val sessionTitle: String = "",
-    val sessionSetsText: String = "",
-    val totalDistanceText: String = "",
-    val showConfirmState: Boolean = false,
-)
