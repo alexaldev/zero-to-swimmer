@@ -10,23 +10,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alexallafi.app.presentation.R
+import com.alexallafi.app.presentation.designsystem.PreviewDefaults
 import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 
 @Composable
-fun FavoriteItemCardRoot(viewModel: NextSessionViewModel) {
-    val items by viewModel.favoriteViewItem.collectAsState()
-    FavoriteItemCard(items)
+fun FavoriteSessionCardRoot(item: FavoriteSessionViewItem, modifier: Modifier = Modifier) {
+    FavoriteSessionCard(item, modifier)
 }
 
 @Composable
-fun FavoriteItemCard(
+fun FavoriteSessionCard(
     item: FavoriteSessionViewItem,
     modifier: Modifier = Modifier,
 ) {
@@ -60,13 +58,10 @@ fun FavoriteItemCard(
 
 @Preview
 @Composable
-fun FavoriteItemCardPreview() {
+fun FavoriteSessionCardPreview() {
     ZeroToSwimmerTheme {
-        FavoriteItemCard(
-            FavoriteSessionViewItem(
-                "1x200, rest for 12 breathes between 200m\n1x200, " +
-                    "rest for 12 breathes between 200m\n1x200, rest for 12 breathes between 200m",
-            ),
+        FavoriteSessionCard(
+            PreviewDefaults.favoriteSessionViewItem,
         )
     }
 }
