@@ -13,10 +13,10 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.alexallafi.app.presentation.SessionsFragment
 import com.alexallafi.app.presentation.history.HistoryFragment
 import com.alexallafi.app.presentation.nextSession.NextSessionFragment
 import com.alexallafi.app.presentation.settings.SettingsFragment
+import com.alexallafi.app.presentation.trainingProgram.SessionsFragment
 import com.alexallafi.zerotoswimmer.databinding.ActivityHomeBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel

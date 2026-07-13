@@ -13,6 +13,7 @@ val TealBackground = Color(0xFFF1F8F7)
 val TealAccent = Color(0xFF4DB6AC)
 val OnTealPrimary = Color(0xFFFFFFFF)
 val Black = Color(0xFF212121)
+val Grey = Color(0xEEEEEEEE)
 
 private val LightColorScheme = lightColorScheme(
     primary = TealPrimary,

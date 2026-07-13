@@ -37,13 +37,16 @@ class ViewItemMapperTests {
             val sessions = fakeSwimSessionsValidSets()
             val groups = mapToGroups(sessions)
 
-            val result = testMapper.mapToViewItems(
-                groups,
-                poolSize = PoolSize.Meters25,
-                favoriteId = "irrelevant"
-            )
+            val result =
+                testMapper.mapToViewItems(
+                    groups,
+                    poolSize = PoolSize.Meters25,
+                    favoriteId = "irrelevant",
+                )
 
-            assertThat(result.filterIsInstance<SwimSessionListItem.WeekHeaderItem>()).isNotEmpty()
+            assertThat(
+                result.filterIsInstance<com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem.WeekHeaderItem>(),
+            ).isNotEmpty()
         }
 
     @Test
@@ -53,16 +56,17 @@ class ViewItemMapperTests {
             val groups = mapToGroups(sessions)
 
             val firstWeekExpectedWeekHeaderItem =
-                SwimSessionListItem.WeekHeaderItem(
+                _root_ide_package_.com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem.WeekHeaderItem(
                     startText = "Week 1",
                     endText = "[600m/3600m] Completed",
                 )
 
-            val testResult = testMapper.mapToViewItems(
-                groups,
-                poolSize = PoolSize.Meters25,
-                favoriteId = "irrelevant"
-            )
+            val testResult =
+                testMapper.mapToViewItems(
+                    groups,
+                    poolSize = PoolSize.Meters25,
+                    favoriteId = "irrelevant",
+                )
 
             assertThat(testResult).contains(firstWeekExpectedWeekHeaderItem)
         }
@@ -121,16 +125,17 @@ class ViewItemMapperTests {
             assertThat(testSwimSetViewItem.swimRounds).contains("1 x 50")
         }
 
-    private fun mapToGroups(sessions: List<SwimSession>): List<SessionGroup> {
-        return sessions.groupBy { it.week }.map { (week, weekSessions) ->
-            SessionGroup(
-                week = week,
-                sessions = weekSessions,
-                completedMeters = weekSessions.filter { it.completed }.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
-                totalMeters = weekSessions.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
-            )
-        }.sortedBy { it.week.value }
-    }
+    private fun mapToGroups(sessions: List<SwimSession>): List<SessionGroup> =
+        sessions
+            .groupBy { it.week }
+            .map { (week, weekSessions) ->
+                SessionGroup(
+                    week = week,
+                    sessions = weekSessions,
+                    completedMeters = weekSessions.filter { it.completed }.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
+                    totalMeters = weekSessions.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
+                )
+            }.sortedBy { it.week.value }
 
     private fun fakeSwimSessionsValidSets(): List<SwimSession> =
         listOf(

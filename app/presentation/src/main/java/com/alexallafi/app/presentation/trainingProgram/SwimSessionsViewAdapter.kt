@@ -1,4 +1,4 @@
-package com.alexallafi.app.presentation
+package com.alexallafi.app.presentation.trainingProgram
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.alexallafi.app.presentation.R
 import com.alexallafi.app.presentation.databinding.CellViewItemCollapsedBinding
 import com.alexallafi.app.presentation.databinding.CellViewItemExpandedBinding
 import com.alexallafi.app.presentation.databinding.CellViewItemOverviewBinding

@@ -1,4 +1,4 @@
-package com.alexallafi.app.presentation
+package com.alexallafi.app.presentation.trainingProgram
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alexallafi.app.presentation.databinding.FragmentSwimSessionsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SessionsFragment : Fragment(R.layout.fragment_swim_sessions) {
+class SessionsFragment :
+    androidx.fragment.app.Fragment(_root_ide_package_.com.alexallafi.app.presentation.R.layout.fragment_swim_sessions) {
     private val viewBinding by viewBinding(FragmentSwimSessionsBinding::bind)
     private val viewModel: SessionsViewModel by viewModel()
 
@@ -44,7 +45,7 @@ class SessionsFragment : Fragment(R.layout.fragment_swim_sessions) {
         viewBinding.sessionsList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewBinding.sessionsList.adapter = this.adapter
-        
+
         (viewBinding.sessionsList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         viewModel.sessionsViewItems.observe(viewLifecycleOwner) {

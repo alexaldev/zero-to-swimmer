@@ -7,6 +7,7 @@ import com.alexallafi.app.domain.SwimSession
 import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.presentation.nextSession.FavoriteSessionViewItem
 import com.alexallafi.app.presentation.nextSession.NextSessionViewItem
+import com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle

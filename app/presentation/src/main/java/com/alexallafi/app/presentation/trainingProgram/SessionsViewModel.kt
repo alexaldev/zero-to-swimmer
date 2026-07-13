@@ -1,4 +1,4 @@
-package com.alexallafi.app.presentation
+package com.alexallafi.app.presentation.trainingProgram
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,8 @@ import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.HistoryRepository
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.usecase.ViewProgramUseCase
-import com.alexallafi.app.presentation.SwimSessionListItem.SwimSessionViewItem
+import com.alexallafi.app.presentation.ViewItemsMapper
+import com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem.SwimSessionViewItem
 import com.github.michaelbull.result.mapBoth
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
