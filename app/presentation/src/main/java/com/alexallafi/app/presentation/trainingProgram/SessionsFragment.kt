@@ -4,52 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alexallafi.app.presentation.databinding.FragmentSwimSessionsBinding
+import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SessionsFragment :
-    androidx.fragment.app.Fragment(_root_ide_package_.com.alexallafi.app.presentation.R.layout.fragment_swim_sessions) {
-    private val viewBinding by viewBinding(FragmentSwimSessionsBinding::bind)
+class SessionsFragment : Fragment() {
     private val viewModel: SessionsViewModel by viewModel()
-
-    private lateinit var adapter: SwimSessionsViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        adapter =
-            SwimSessionsViewAdapter(
-                requireContext(),
-                collapseListener = { viewModel.onAction(SwimSessionAction.CollapseSession(it)) },
-                expandListener = { viewModel.onAction(SwimSessionAction.ExpandSession(it)) },
-                onCompletedToggleListener = { viewModel.onAction(SwimSessionAction.CompletedToggled(it)) },
-                scrollToNextAvailableListener = { viewBinding.sessionsList.scrollToPosition(viewModel.nextAvailableSessionPosition()) },
-                onFavoriteToggleListener = { viewModel.onAction(SwimSessionAction.FavoriteToggled(it)) },
-            )
-
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewBinding.sessionsList.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        viewBinding.sessionsList.adapter = this.adapter
-
-        (viewBinding.sessionsList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-
-        viewModel.sessionsViewItems.observe(viewLifecycleOwner) {
-            adapter.updateData(it)
+    ): View =
+        ComposeView(requireContext()).apply {
+            setContent {
+                ZeroToSwimmerTheme {
+                    TrainingSessionScreenRoot(viewModel)
+                }
+            }
         }
-    }
 }

@@ -1,7 +1,9 @@
 package com.alexallafi.app.presentation.trainingProgram
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,32 +35,17 @@ import com.alexallafi.app.presentation.designsystem.PreviewDefaults
 import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 
 @Composable
-fun TrainingSessionExpandedCardRoot(item: SwimSessionListItem.SwimSessionViewItem) {
-    TrainingSessionExpandedCard(
-        item = item,
-        onUserAction = {},
-    )
-}
-
-@Composable
 fun TrainingSessionExpandedCard(
     item: SwimSessionListItem.SwimSessionViewItem,
     onUserAction: (SwimSessionAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardContainerColor = if (item.isCompleted) Grey else MaterialTheme.colorScheme.surface
-
-    Card(
-        modifier = modifier.padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = cardContainerColor,
-            ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+    TrainingSessionContainerCard(
+        item = item,
+        modifier = modifier
     ) {
         Column(modifier = modifier.padding(16.dp)) {
-            SessionItemCardTitle(modifier, item, onUserAction)
+            SessionItemCardTitle(item, onUserAction, modifier)
 
             HorizontalDivider(
                 thickness = 1.dp,
@@ -84,10 +71,26 @@ fun TrainingSessionExpandedCard(
 }
 
 @Composable
-private fun SessionItemCardTitle(
-    modifier: Modifier,
+fun TrainingSessionCollapsedCard(
     item: SwimSessionListItem.SwimSessionViewItem,
     onUserAction: (SwimSessionAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    TrainingSessionContainerCard(
+        item = item,
+        modifier = modifier
+    ) {
+        Column(modifier = modifier.padding(16.dp)) {
+            SessionItemCardTitle(item, onUserAction, modifier)
+        }
+    }
+}
+
+@Composable
+fun SessionItemCardTitle(
+    item: SwimSessionListItem.SwimSessionViewItem,
+    onUserAction: (SwimSessionAction) -> Unit,
+    modifier: Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -118,8 +121,14 @@ private fun SessionItemCardTitle(
         }
         IconButton(
             onClick = {
-                onUserAction.invoke(if (item.isExpanded) SwimSessionAction.CollapseSession(item)
-                                    else SwimSessionAction.ExpandSession(item)) },
+                onUserAction.invoke(
+                    if (item.isExpanded) {
+                        SwimSessionAction.CollapseSession(item)
+                    } else {
+                        SwimSessionAction.ExpandSession(item)
+                    },
+                )
+            },
             modifier = modifier,
         ) {
             Icon(
@@ -131,11 +140,65 @@ private fun SessionItemCardTitle(
 }
 
 @Composable
+fun TrainingSessionContainerCard(
+    item: SwimSessionListItem.SwimSessionViewItem,
+    modifier: Modifier = Modifier,
+    content: @Composable (ColumnScope) -> Unit,
+) {
+    val cardContainerColor = if (item.isCompleted) Grey else MaterialTheme.colorScheme.surface
+
+    Card(
+        modifier = modifier.padding(16.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = cardContainerColor,
+            ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        content = content,
+    )
+}
+
+@Composable
+fun WeekHeader(
+    item: SwimSessionListItem.WeekHeaderItem,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth().padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = item.startText,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text = item.endText,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+@Composable
+@Preview
+fun WeekHeaderPreview() {
+    ZeroToSwimmerTheme {
+        WeekHeader(
+            PreviewDefaults.weekHeaderSessionItem,
+        )
+    }
+}
+
+@Composable
 @Preview
 fun TrainingSessionExpandedCardPreview() {
     ZeroToSwimmerTheme {
-        TrainingSessionExpandedCardRoot(
+        TrainingSessionExpandedCard(
             PreviewDefaults.expandedSwimSessionItem,
+            {},
         )
     }
 }

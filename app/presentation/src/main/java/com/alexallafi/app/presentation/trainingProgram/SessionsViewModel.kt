@@ -2,7 +2,6 @@ package com.alexallafi.app.presentation.trainingProgram
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.HistoryRepository
@@ -28,7 +27,7 @@ class SessionsViewModel(
     private val expandedSessionIds =
         memoryStateHandle.getStateFlow<Set<String>>(EXPANDED_IDS_KEY, emptySet())
 
-    private val _sessionsViewItems =
+    val sessionsViewItems =
         combine(
             viewProgramUseCase.observe(),
             configurationRepository.observeFavoriteSession(),
@@ -41,10 +40,8 @@ class SessionsViewModel(
             )
         }.stateIn(viewModelScope, WhileSubscribed(5.seconds.inWholeMilliseconds), emptyList())
 
-    val sessionsViewItems = _sessionsViewItems.asLiveData()
-
     fun nextAvailableSessionPosition(): Int =
-        this._sessionsViewItems.value
+        this.sessionsViewItems.value
             .indexOfFirst { swimSession -> swimSession is SwimSessionViewItem && swimSession.isCompleted.not() }
 
     fun onAction(action: SwimSessionAction) {

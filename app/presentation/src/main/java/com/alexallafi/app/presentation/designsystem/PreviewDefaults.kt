@@ -22,7 +22,7 @@ object PreviewDefaults {
 
     val expandedSwimSessionItem =
         SwimSessionListItem.SwimSessionViewItem(
-            id = "123",
+            id = "556",
             title = "Week 1, Day 1",
             message = "1200m total",
             isExpanded = true,
@@ -49,4 +49,15 @@ object PreviewDefaults {
                     "4 x 100m, 4 x 50m, 4 x 25m\n" +
                     "4 x 100m, 4 x 50m, 4 x 25m",
         )
+
+    val weekHeaderSessionItem = SwimSessionListItem.WeekHeaderItem(
+        startText = "Week 3",
+        endText = "2100, 2100 completed"
+    )
+
+    val trainingSessionsItemsList = listOf(
+        weekHeaderSessionItem,
+        expandedSwimSessionItem,
+        collapsedSwimSessionItem
+    )
 }
