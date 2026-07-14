@@ -19,7 +19,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -178,6 +180,30 @@ fun WeekHeader(
         Text(
             text = item.endText,
             style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+@Composable
+fun WeekProgressBar(
+    progress: Int,
+    modifier: Modifier = Modifier
+) {
+    LinearProgressIndicator(
+    progress = { progress / 100f },
+    modifier = modifier,
+    color = MaterialTheme.colorScheme.primary,
+    trackColor = MaterialTheme.colorScheme.outlineVariant,
+    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+    )
+}
+
+@Composable
+@Preview
+fun WeekProgressPreview() {
+    ZeroToSwimmerTheme() {
+        WeekProgressBar(
+            progress = 60
         )
     }
 }
