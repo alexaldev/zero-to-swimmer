@@ -46,13 +46,13 @@ fun TrainingSessionExpandedCard(
         item = item,
         modifier = modifier
     ) {
-        Column(modifier = modifier.padding(16.dp)) {
-            SessionItemCardTitle(item, onUserAction, modifier)
+        Column(modifier = Modifier.padding(16.dp)) {
+            SessionItemCardTitle(item, onUserAction)
 
             HorizontalDivider(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = modifier.padding(vertical = 8.dp),
+                modifier = Modifier.padding(vertical = 8.dp),
             )
             Text(
                 text = item.swimRounds,
@@ -60,7 +60,7 @@ fun TrainingSessionExpandedCard(
             )
             IconButton(
                 onClick = { onUserAction.invoke(SwimSessionAction.FavoriteToggled(item)) },
-                modifier = modifier.align(Alignment.End),
+                modifier = Modifier.align(Alignment.End),
             ) {
                 Icon(
                     imageVector = if (item.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -92,7 +92,7 @@ fun TrainingSessionCollapsedCard(
 fun SessionItemCardTitle(
     item: SwimSessionListItem.SwimSessionViewItem,
     onUserAction: (SwimSessionAction) -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -167,7 +167,7 @@ fun WeekHeader(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(16.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
