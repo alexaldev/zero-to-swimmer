@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
 // Colors from themes.xml and colors.xml
@@ -35,8 +36,16 @@ fun ZeroToSwimmerTheme(
     // Currently only supporting light theme as per themes.xml
     val colorScheme = LightColorScheme
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
-    )
+    CompositionLocalProvider(LocalSpacing provides Spacing()) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            content = content
+        )
+    }
+}
+
+object AppTheme {
+    val spacing: Spacing
+    @Composable
+    get() = LocalSpacing.current
 }

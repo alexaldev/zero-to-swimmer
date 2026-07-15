@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alexallafi.app.presentation.designsystem.AppTheme
 import com.alexallafi.app.presentation.designsystem.PreviewDefaults
 
 @Composable
@@ -57,7 +58,7 @@ fun TrainingSessionScreen(
                 }
 
                 is SwimSessionListItem.WeekHeaderItem -> {
-                    WeekHeader(item, Modifier.padding(16.dp))
+                    WeekHeader(item, Modifier.padding(AppTheme.spacing.medium))
                 }
             }
         }

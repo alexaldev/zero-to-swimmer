@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alexallafi.app.presentation.R
+import com.alexallafi.app.presentation.designsystem.AppTheme
 import com.alexallafi.app.presentation.designsystem.Grey
 import com.alexallafi.app.presentation.designsystem.PreviewDefaults
 import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
@@ -46,13 +47,13 @@ fun TrainingSessionExpandedCard(
         item = item,
         modifier = modifier
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(AppTheme.spacing.medium)) {
             SessionItemCardTitle(item, onUserAction)
 
             HorizontalDivider(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier.padding(vertical = 8.dp),
+                modifier = Modifier.padding(vertical = AppTheme.spacing.small),
             )
             Text(
                 text = item.swimRounds,
@@ -82,7 +83,7 @@ fun TrainingSessionCollapsedCard(
         item = item,
         modifier = modifier
     ) {
-        Column(modifier = modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(AppTheme.spacing.medium)) {
             SessionItemCardTitle(item, onUserAction, modifier)
         }
     }
@@ -104,11 +105,11 @@ fun SessionItemCardTitle(
             painter = painterResource(iconResource),
             contentDescription = "",
             tint = MaterialTheme.colorScheme.primary,
-            modifier = modifier.clip(CircleShape),
+            modifier = Modifier.clip(CircleShape),
         )
         Column(
             modifier =
-                modifier
+                Modifier
                     .padding(start = 8.dp)
                     .weight(1f),
         ) {
@@ -131,7 +132,6 @@ fun SessionItemCardTitle(
                     },
                 )
             },
-            modifier = modifier,
         ) {
             Icon(
                 imageVector = if (item.isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -150,8 +150,8 @@ fun TrainingSessionContainerCard(
     val cardContainerColor = if (item.isCompleted) Grey else MaterialTheme.colorScheme.surface
 
     Card(
-        modifier = modifier.padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
+        modifier = modifier.padding(AppTheme.spacing.medium),
+        shape = RoundedCornerShape(AppTheme.spacing.medium),
         colors =
             CardDefaults.cardColors(
                 containerColor = cardContainerColor,
@@ -224,6 +224,17 @@ fun TrainingSessionExpandedCardPreview() {
     ZeroToSwimmerTheme {
         TrainingSessionExpandedCard(
             PreviewDefaults.expandedSwimSessionItem,
+            {},
+        )
+    }
+}
+
+@Composable
+@Preview
+fun TrainingSessionCollapsedCardPreview() {
+    ZeroToSwimmerTheme {
+        TrainingSessionCollapsedCard(
+            PreviewDefaults.collapsedSwimSessionItem,
             {},
         )
     }
