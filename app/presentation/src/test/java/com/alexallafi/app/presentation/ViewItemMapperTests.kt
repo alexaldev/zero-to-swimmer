@@ -2,17 +2,12 @@ package com.alexallafi.app.presentation
 
 import assertk.assertThat
 import assertk.assertions.contains
-import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
-import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.PoolSize
 import com.alexallafi.app.domain.SessionGroup
 import com.alexallafi.app.domain.SwimSession
-import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.domain.SwimmingWeek
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -57,8 +52,8 @@ class ViewItemMapperTests {
 
             val firstWeekExpectedWeekHeaderItem =
                 _root_ide_package_.com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem.WeekHeaderItem(
-                    startText = "Week 1",
-                    endText = "[600m/3600m] Completed",
+                    weekText = "Week 1",
+                    weekProgress = "[600m/3600m] Completed",
                 )
 
             val testResult =

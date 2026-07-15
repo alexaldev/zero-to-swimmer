@@ -17,7 +17,7 @@ sealed interface SwimSessionListItem {
     ) : SwimSessionListItem
 
     data class WeekHeaderItem(
-        val startText: String = "",
-        val endText: String = "",
+        val weekText: String = "",
+        val weekProgress: Float = 0f
     ) : SwimSessionListItem
 }

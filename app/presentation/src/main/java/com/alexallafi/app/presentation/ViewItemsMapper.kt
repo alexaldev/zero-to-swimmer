@@ -35,10 +35,8 @@ class ViewItemsMapper(
         sessionGroups.forEach { group ->
             result +=
                 SwimSessionListItem.WeekHeaderItem(
-                    startText = "${stringResourcesProvider.getString(R.string.week)} ${group.week.value}",
-                    endText =
-                        "[${group.completedMeters}m/${group.totalMeters}m] " +
-                            stringResourcesProvider.getString(R.string.completed),
+                    weekText = "${stringResourcesProvider.getString(R.string.week)} ${group.week.value}",
+                    weekProgress = group.completedMeters / group.totalMeters.toFloat()
                 )
 
             group.sessions

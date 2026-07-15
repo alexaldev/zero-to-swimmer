@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -45,7 +46,7 @@ fun TrainingSessionExpandedCard(
 ) {
     TrainingSessionContainerCard(
         item = item,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column(modifier = Modifier.padding(AppTheme.spacing.medium)) {
             SessionItemCardTitle(item, onUserAction)
@@ -81,7 +82,7 @@ fun TrainingSessionCollapsedCard(
 ) {
     TrainingSessionContainerCard(
         item = item,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column(modifier = Modifier.padding(AppTheme.spacing.medium)) {
             SessionItemCardTitle(item, onUserAction, modifier)
@@ -172,38 +173,43 @@ fun WeekHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = item.startText,
+            text = item.weekText,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = Bold,
             color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.weight(1f),
         )
-        Text(
-            text = item.endText,
-            style = MaterialTheme.typography.bodyMedium,
+        WeekProgressBar(
+            progress = item.weekProgress,
+            modifier =
+                Modifier
+                    .padding(AppTheme.spacing.medium)
+                    .widthIn(max = 150.dp)
+                    .fillMaxWidth(0.8f),
         )
     }
 }
 
 @Composable
 fun WeekProgressBar(
-    progress: Int,
-    modifier: Modifier = Modifier
+    progress: Float,
+    modifier: Modifier = Modifier,
 ) {
     LinearProgressIndicator(
-    progress = { progress / 100f },
-    modifier = modifier,
-    color = MaterialTheme.colorScheme.primary,
-    trackColor = MaterialTheme.colorScheme.outlineVariant,
-    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+        progress = { progress },
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.primary,
+        trackColor = MaterialTheme.colorScheme.outlineVariant,
+        strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
     )
 }
 
 @Composable
 @Preview
 fun WeekProgressPreview() {
-    ZeroToSwimmerTheme() {
+    ZeroToSwimmerTheme {
         WeekProgressBar(
-            progress = 60
+            progress = 0.6f,
         )
     }
 }

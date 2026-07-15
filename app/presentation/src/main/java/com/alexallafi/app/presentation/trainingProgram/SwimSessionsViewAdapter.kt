@@ -105,8 +105,7 @@ class SwimSessionsViewAdapter(
         private val viewBinding: CellViewItemWeekHeaderBinding,
     ) : ViewHolder(viewBinding.root) {
         fun bind(item: SwimSessionListItem.WeekHeaderItem) {
-            viewBinding.weekIdView.text = item.startText
-            viewBinding.completedTextView.text = item.endText
+            viewBinding.weekIdView.text = item.weekText
         }
     }
 
@@ -176,7 +175,7 @@ private class SwimSessionListItemDiffCallback : DiffUtil.ItemCallback<SwimSessio
             }
 
             is SwimSessionListItem.WeekHeaderItem if newItem is SwimSessionListItem.WeekHeaderItem -> {
-                oldItem.startText == newItem.startText
+                oldItem.weekText == newItem.weekText
             }
 
             is SwimSessionListItem.ProgressOverviewViewItem if newItem is SwimSessionListItem.ProgressOverviewViewItem -> {

@@ -38,6 +38,7 @@ kotlin {
 dependencies {
 
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.foundation.layout)
     implementation(projects.app.domain)
 
     implementation(libs.androidx.core.ktx)

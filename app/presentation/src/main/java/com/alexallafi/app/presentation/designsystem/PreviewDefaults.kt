@@ -51,8 +51,8 @@ object PreviewDefaults {
         )
 
     val weekHeaderSessionItem = SwimSessionListItem.WeekHeaderItem(
-        startText = "Week 3",
-        endText = "2100, 2100 completed"
+        weekText = "Week 3",
+        weekProgress = 0.7f
     )
 
     val trainingSessionsItemsList = listOf(
