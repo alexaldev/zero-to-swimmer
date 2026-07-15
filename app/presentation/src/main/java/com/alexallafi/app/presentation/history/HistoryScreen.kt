@@ -5,7 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alexallafi.app.presentation.designsystem.AppTheme
 import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 
 @Composable
@@ -24,10 +29,11 @@ fun HistoryScreenRoot(viewModel: HistoryViewModel) {
 
 @Composable
 fun HistoryScreen(
-    items: List<HistoryListItem>
+    items: List<HistoryListItem>,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
         if (items.isEmpty()) {
@@ -36,8 +42,8 @@ fun HistoryScreen(
             }
         } else {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(),
+                contentPadding = PaddingValues(all = AppTheme.spacing.medium),
+                verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.medium),
             ) {
                 items(
                     items = items,
@@ -77,31 +83,32 @@ fun HistoryScreenPreview() {
                     completedAt = "Yesterday at 18:30",
                 ),
                 HistoryListItem.MonthHeader("February 2023"),
-            )
+            ),
         )
     }
 }
 
 @Composable
-fun MonthHeaderItem(month: String) {
+fun MonthHeaderItem(
+    month: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = month,
         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
         color = MaterialTheme.colorScheme.primary,
         modifier =
-            Modifier
-                .padding(horizontal = 24.dp)
-                .padding(top = 24.dp, bottom = 8.dp),
+        modifier,
     )
 }
 
 @Composable
-fun HistorySessionItem(item: HistoryListItem.SessionItem) {
+fun HistorySessionItem(
+    item: HistoryListItem.SessionItem,
+    modifier: Modifier = Modifier,
+) {
     Card(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = modifier.fillMaxWidth(),
         shape =
             RoundedCornerShape(16.dp),
         colors =
@@ -113,7 +120,7 @@ fun HistorySessionItem(item: HistoryListItem.SessionItem) {
         Column(
             modifier =
                 Modifier
-                    .padding(16.dp),
+                    .padding(AppTheme.spacing.medium),
         ) {
             Text(
                 text = item.sessionTitle,
