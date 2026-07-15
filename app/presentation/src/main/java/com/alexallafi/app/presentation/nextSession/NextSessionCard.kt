@@ -25,22 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexallafi.app.presentation.R
+import com.alexallafi.app.presentation.designsystem.AppTheme
 import com.alexallafi.app.presentation.designsystem.PreviewDefaults
 import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
-
-@Composable
-fun NextSessionCardRoot(
-    item: NextSessionViewItem,
-    onUserAction: (UserAction) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-
-    NextSessionCard(
-        item = item,
-        onUserAction = onUserAction,
-        modifier
-    )
-}
 
 @Composable
 fun NextSessionCard(
@@ -61,7 +48,7 @@ fun NextSessionCard(
     ) {
 
         Column(
-            modifier = modifier.padding(24.dp)
+            modifier = Modifier.padding(24.dp)
         ) {
             Text(
                 text = stringResource(R.string.next_up),
@@ -80,20 +67,20 @@ fun NextSessionCard(
             HorizontalDivider(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.1f),
-                modifier = modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = 16.dp)
             )
             Text(
                 text = item.sessionSetsText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = 16.dp)
             )
             Row(
-                modifier = modifier.fillMaxWidth().padding(top = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                 horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
-                    modifier = modifier.visible(item.showConfirmState).padding(end = 16.dp),
+                    modifier = Modifier.visible(item.showConfirmState).padding(end = AppTheme.spacing.medium),
                     onClick = { onUserAction(UserAction.CancelCompletion) }
                 ) {
                     Text(
@@ -102,7 +89,6 @@ fun NextSessionCard(
                     )
                 }
                 FilledTonalButton(
-                    modifier = modifier,
                     onClick = {
                         onUserAction(when {
                             item.showConfirmState -> UserAction.ConfirmCompletion

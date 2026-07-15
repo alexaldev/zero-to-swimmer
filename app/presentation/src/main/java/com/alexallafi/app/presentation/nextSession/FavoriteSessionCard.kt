@@ -18,10 +18,6 @@ import com.alexallafi.app.presentation.R
 import com.alexallafi.app.presentation.designsystem.PreviewDefaults
 import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 
-@Composable
-fun FavoriteSessionCardRoot(item: FavoriteSessionViewItem, modifier: Modifier = Modifier) {
-    FavoriteSessionCard(item, modifier)
-}
 
 @Composable
 fun FavoriteSessionCard(
@@ -40,7 +36,7 @@ fun FavoriteSessionCard(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Column(
-            modifier = modifier.padding(20.dp),
+            modifier = Modifier.padding(20.dp),
         ) {
             Text(
                 text = stringResource(R.string.favorite_session),
@@ -50,7 +46,7 @@ fun FavoriteSessionCard(
             Text(
                 text = item.sessionSetsText,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = modifier.padding(top = 8.dp),
+                modifier = Modifier.padding(top = 8.dp),
             )
         }
     }
