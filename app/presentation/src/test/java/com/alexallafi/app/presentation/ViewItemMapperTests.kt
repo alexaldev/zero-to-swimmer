@@ -8,6 +8,7 @@ import com.alexallafi.app.domain.SessionGroup
 import com.alexallafi.app.domain.SwimSession
 import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.domain.SwimmingWeek
+import com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,7 +41,7 @@ class ViewItemMapperTests {
                 )
 
             assertThat(
-                result.filterIsInstance<com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem.WeekHeaderItem>(),
+                result.filterIsInstance<SwimSessionListItem.WeekHeaderItem>(),
             ).isNotEmpty()
         }
 
@@ -51,9 +52,9 @@ class ViewItemMapperTests {
             val groups = mapToGroups(sessions)
 
             val firstWeekExpectedWeekHeaderItem =
-                _root_ide_package_.com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem.WeekHeaderItem(
+                SwimSessionListItem.WeekHeaderItem(
                     weekText = "Week 1",
-                    weekProgress = "[600m/3600m] Completed",
+                    weekProgress = 1f / 6f,
                 )
 
             val testResult =
