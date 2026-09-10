@@ -1,13 +1,14 @@
-package com.alexallafi.app.presentation
+package com.alexallafi.app.presentation.trainingProgram
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.alexallafi.app.domain.ConfigurationRepository
+import com.alexallafi.app.domain.HistoryRepository
 import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.usecase.ViewProgramUseCase
-import com.alexallafi.app.presentation.SwimSessionListItem.SwimSessionViewItem
+import com.alexallafi.app.presentation.ViewItemsMapper
+import com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem.SwimSessionViewItem
 import com.github.michaelbull.result.mapBoth
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
@@ -17,6 +18,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class SessionsViewModel(
     private val sessionsRepository: SwimSessionsRepository,
+    private val historyRepository: HistoryRepository,
     private val viewItemsMapper: ViewItemsMapper,
     private val configurationRepository: ConfigurationRepository,
     private val memoryStateHandle: SavedStateHandle,
@@ -25,7 +27,7 @@ class SessionsViewModel(
     private val expandedSessionIds =
         memoryStateHandle.getStateFlow<Set<String>>(EXPANDED_IDS_KEY, emptySet())
 
-    private val _sessionsViewItems =
+    val sessionsViewItems =
         combine(
             viewProgramUseCase.observe(),
             configurationRepository.observeFavoriteSession(),
@@ -38,10 +40,8 @@ class SessionsViewModel(
             )
         }.stateIn(viewModelScope, WhileSubscribed(5.seconds.inWholeMilliseconds), emptyList())
 
-    val sessionsViewItems = _sessionsViewItems.asLiveData()
-
     fun nextAvailableSessionPosition(): Int =
-        this._sessionsViewItems.value
+        this.sessionsViewItems.value
             .indexOfFirst { swimSession -> swimSession is SwimSessionViewItem && swimSession.isCompleted.not() }
 
     fun onAction(action: SwimSessionAction) {
@@ -56,7 +56,16 @@ class SessionsViewModel(
 
             is SwimSessionAction.CompletedToggled -> {
                 val selectedSession = action.sessionViewItem as? SwimSessionViewItem ?: return
-                viewModelScope.launch { sessionsRepository.toggleCompleted(selectedSession.id) }
+                viewModelScope.launch {
+                    sessionsRepository.toggleCompleted(selectedSession.id)
+                    sessionsRepository.getById(selectedSession.id)?.let { updated ->
+                        if (updated.completed) {
+                            historyRepository.addSession(updated)
+                        } else {
+                            historyRepository.removeSessionBySessionId(updated.id)
+                        }
+                    }
+                }
             }
 
             SwimSessionAction.ScrollToNextAvailable -> {

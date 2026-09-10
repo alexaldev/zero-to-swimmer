@@ -1,11 +1,10 @@
-package com.alexallafi.app.presentation
+package com.alexallafi.app.presentation.trainingProgram
 
 sealed interface SwimSessionListItem {
-
     data class ProgressOverviewViewItem(
         val totalCompleted: String,
-        val nextAvailable: String
-    ): SwimSessionListItem
+        val nextAvailable: String,
+    ) : SwimSessionListItem
 
     data class SwimSessionViewItem(
         val id: String,
@@ -14,11 +13,11 @@ sealed interface SwimSessionListItem {
         val isCompleted: Boolean = false,
         val isExpanded: Boolean = false,
         val isFavorite: Boolean = false,
-        val swimRounds: String = ""
-    ): SwimSessionListItem
+        val swimRounds: String = "",
+    ) : SwimSessionListItem
 
     data class WeekHeaderItem(
-        val startText: String = "",
-        val endText: String = ""
-    ): SwimSessionListItem
+        val weekText: String = "",
+        val weekProgress: Float = 0f
+    ) : SwimSessionListItem
 }

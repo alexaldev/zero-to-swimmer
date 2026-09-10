@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -82,14 +80,3 @@ sealed interface UserAction {
     data object CancelCompletion : UserAction
 }
 
-data class FavoriteSessionViewItem(
-    val sessionSetsText: String = "",
-)
-
-data class NextSessionViewItem(
-    val id: String = "",
-    val sessionTitle: String = "",
-    val sessionSetsText: String = "",
-    val totalDistanceText: String = "",
-    val showConfirmState: Boolean = false,
-)

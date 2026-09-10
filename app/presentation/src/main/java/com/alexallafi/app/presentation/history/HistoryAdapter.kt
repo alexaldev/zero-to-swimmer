@@ -78,7 +78,7 @@ class HistoryAdapter : ListAdapter<HistoryListItem, RecyclerView.ViewHolder>(Dif
                 }
 
                 is HistoryListItem.SessionItem if newItem is HistoryListItem.SessionItem -> {
-                    oldItem.id == newItem.id
+                    oldItem.entryId == newItem.entryId
                 }
 
                 else -> {

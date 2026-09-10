@@ -1,80 +1,42 @@
 package com.alexallafi.zerotoswimmer
 
 import android.os.Bundle
-import android.view.View
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.commit
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.alexallafi.app.presentation.SessionsFragment
-import com.alexallafi.app.presentation.history.HistoryFragment
-import com.alexallafi.app.presentation.nextSession.NextSessionFragment
-import com.alexallafi.app.presentation.settings.SettingsFragment
-import com.alexallafi.zerotoswimmer.databinding.ActivityHomeBinding
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
+import com.alexallafi.app.presentation.navigation.TrainingNavKey
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : ComponentActivity() {
     private val viewModel: HomeViewModel by viewModel()
-    private val viewBinding by viewBinding { ActivityHomeBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setupSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(viewBinding.root)
-        setupEdgeToEdge()
-        setupNavigation(savedInstanceState)
-    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        outState.putInt("currentScreen", viewBinding.navBar.selectedItemId)
-    }
-
-    private fun setupNavigation(savedInstanceState: Bundle?) {
-        viewBinding.navBar.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_sessions_list -> {
-                    supportFragmentManager.commit {
-                        replace(R.id.fragment_container, SessionsFragment())
-                    }
-                }
-
-                R.id.nav_settings -> {
-                    supportFragmentManager.commit {
-                        replace(R.id.fragment_container, SettingsFragment())
-                    }
-                }
-
-                R.id.nav_next_sessions -> {
-                    supportFragmentManager.commit {
-                        replace(R.id.fragment_container, NextSessionFragment())
-                    }
-                }
-
-                R.id.nav_history -> {
-                    supportFragmentManager.commit {
-                        replace(R.id.fragment_container, HistoryFragment())
-                    }
-                }
-            }
-            true
-        }
-
-        viewBinding.navBar.selectedItemId = savedInstanceState?.getInt("currentScreen") ?: R.id.nav_sessions_list
-    }
-
-    private fun setupSplashScreen() {
-        val splashScreen = installSplashScreen()
         var loading = true
         splashScreen.setKeepOnScreenCondition { loading }
         lifecycleScope.launch {
@@ -85,17 +47,55 @@ class HomeActivity : AppCompatActivity() {
                     loading = it
                 }
         }
-    }
 
-    private fun setupEdgeToEdge() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(
-            findViewById<View>(android.R.id.content),
-        ) { v: View, windowInsets: WindowInsetsCompat ->
-            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Apply the insets paddings to the view.
-            v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
-            WindowInsetsCompat.CONSUMED
+        setContent {
+            ZeroToSwimmerTheme {
+                MainScreen()
+            }
+        }
+    }
+}
+
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                homeNavigationItems.forEach { item ->
+                    NavigationBarItem(
+                        selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
+                        onClick = {
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = item.iconRes),
+                                contentDescription = null,
+                            )
+                        },
+                        label = { Text(stringResource(item.labelRes)) },
+                        alwaysShowLabel = false,
+                    )
+                }
+            }
+        },
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = TrainingNavKey.SessionsList,
+            modifier = Modifier.padding(paddingValues),
+        ) {
+            homeGraph()
         }
     }
 }
