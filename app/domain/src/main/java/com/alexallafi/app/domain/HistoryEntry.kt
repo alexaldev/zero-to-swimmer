@@ -2,8 +2,10 @@ package com.alexallafi.app.domain
 
 import java.time.OffsetDateTime
 
+typealias HistoryEntryId = String
+
 data class HistoryEntry(
-    private val id: String,
+    val id: HistoryEntryId,
     val swimSessionId: String,
     val completedAt: OffsetDateTime,
 )

@@ -2,17 +2,13 @@ package com.alexallafi.app.presentation
 
 import assertk.assertThat
 import assertk.assertions.contains
-import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
-import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.PoolSize
 import com.alexallafi.app.domain.SessionGroup
 import com.alexallafi.app.domain.SwimSession
-import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.SwimmingSet
 import com.alexallafi.app.domain.SwimmingWeek
-import io.mockk.coEvery
-import io.mockk.mockk
+import com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -37,13 +33,16 @@ class ViewItemMapperTests {
             val sessions = fakeSwimSessionsValidSets()
             val groups = mapToGroups(sessions)
 
-            val result = testMapper.mapToViewItems(
-                groups,
-                poolSize = PoolSize.Meters25,
-                favoriteId = "irrelevant"
-            )
+            val result =
+                testMapper.mapToViewItems(
+                    groups,
+                    poolSize = PoolSize.Meters25,
+                    favoriteId = "irrelevant",
+                )
 
-            assertThat(result.filterIsInstance<SwimSessionListItem.WeekHeaderItem>()).isNotEmpty()
+            assertThat(
+                result.filterIsInstance<SwimSessionListItem.WeekHeaderItem>(),
+            ).isNotEmpty()
         }
 
     @Test
@@ -54,17 +53,20 @@ class ViewItemMapperTests {
 
             val firstWeekExpectedWeekHeaderItem =
                 SwimSessionListItem.WeekHeaderItem(
-                    startText = "Week 1",
-                    endText = "[600m/3600m] Completed",
+                    weekText = "Week 1",
+                    weekProgress = 1f / 6f,
                 )
 
-            val testResult = testMapper.mapToViewItems(
-                groups,
-                poolSize = PoolSize.Meters25,
-                favoriteId = "irrelevant"
-            )
+            val testResult =
+                testMapper.mapToViewItems(
+                    groups,
+                    poolSize = PoolSize.Meters25,
+                    favoriteId = "irrelevant",
+                )
 
             assertThat(testResult).contains(firstWeekExpectedWeekHeaderItem)
+            assertThat(testResult).contains(secondWeekExpectedWeekHeaderItem)
+            assertThat(testResult).contains(thirdWeekExpectedWeekHeaderItem)
         }
 
     @Test
@@ -121,16 +123,17 @@ class ViewItemMapperTests {
             assertThat(testSwimSetViewItem.swimRounds).contains("1 x 50")
         }
 
-    private fun mapToGroups(sessions: List<SwimSession>): List<SessionGroup> {
-        return sessions.groupBy { it.week }.map { (week, weekSessions) ->
-            SessionGroup(
-                week = week,
-                sessions = weekSessions,
-                completedMeters = weekSessions.filter { it.completed }.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
-                totalMeters = weekSessions.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
-            )
-        }.sortedBy { it.week.value }
-    }
+    private fun mapToGroups(sessions: List<SwimSession>): List<SessionGroup> =
+        sessions
+            .groupBy { it.week }
+            .map { (week, weekSessions) ->
+                SessionGroup(
+                    week = week,
+                    sessions = weekSessions,
+                    completedMeters = weekSessions.filter { it.completed }.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
+                    totalMeters = weekSessions.sumOf { it.swimSets.sumOf { set -> set.meters * set.count } },
+                )
+            }.sortedBy { it.week.value }
 
     private fun fakeSwimSessionsValidSets(): List<SwimSession> =
         listOf(

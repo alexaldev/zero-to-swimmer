@@ -1,17 +1,13 @@
 package com.alexallafi.app.presentation
 
 import androidx.annotation.VisibleForTesting
-import com.alexallafi.app.domain.ConfigurationRepository
 import com.alexallafi.app.domain.PoolSize
 import com.alexallafi.app.domain.SessionGroup
 import com.alexallafi.app.domain.SwimSession
-import com.alexallafi.app.domain.SwimSessionsRepository
 import com.alexallafi.app.domain.SwimmingSet
-import com.alexallafi.app.domain.SwimmingWeek
 import com.alexallafi.app.presentation.nextSession.FavoriteSessionViewItem
 import com.alexallafi.app.presentation.nextSession.NextSessionViewItem
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.alexallafi.app.presentation.trainingProgram.SwimSessionListItem
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -39,9 +35,8 @@ class ViewItemsMapper(
         sessionGroups.forEach { group ->
             result +=
                 SwimSessionListItem.WeekHeaderItem(
-                    startText = "${stringResourcesProvider.getString(R.string.week)} ${group.week.value}",
-                    endText = "[${group.completedMeters}m/${group.totalMeters}m] " +
-                        stringResourcesProvider.getString(R.string.completed),
+                    weekText = "${stringResourcesProvider.getString(R.string.week)} ${group.week.value}",
+                    weekProgress = group.completedMeters / group.totalMeters.toFloat()
                 )
 
             group.sessions

@@ -2,12 +2,14 @@ package com.alexallafi.app.presentation
 
 import com.alexallafi.app.domain.usecase.CompleteSessionUseCase
 import com.alexallafi.app.domain.usecase.GetNextAvailableSessionUseCase
+import com.alexallafi.app.domain.usecase.SaveHistoryNoteUseCase
 import com.alexallafi.app.domain.usecase.SeeFavoriteSessionUseCase
 import com.alexallafi.app.domain.usecase.ViewHistoryUseCase
 import com.alexallafi.app.domain.usecase.ViewProgramUseCase
 import com.alexallafi.app.presentation.history.HistoryViewModel
 import com.alexallafi.app.presentation.nextSession.NextSessionViewModel
 import com.alexallafi.app.presentation.settings.SettingsViewModel
+import com.alexallafi.app.presentation.trainingProgram.SessionsViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -27,5 +29,6 @@ val presentationModule =
         factoryOf(::GetNextAvailableSessionUseCase)
         factoryOf(::CompleteSessionUseCase)
         factoryOf(::ViewHistoryUseCase)
+        factoryOf(::SaveHistoryNoteUseCase)
         factoryOf(::ViewProgramUseCase)
     }

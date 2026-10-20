@@ -42,12 +42,12 @@ class LocalHistoryRepository(
         val toAdd = swimSession.toStorableHistoryEntry()
         val currentHistory = getAllAsDataModel().toMutableList()
 
+        val updated = currentHistory + toAdd
+        val toStore = Json.encodeToString(updated)
         prefs.edit {
-            val updated = currentHistory + toAdd
-            val toStore = Json.encodeToString(updated)
-            historyStateFlow.update { updated.toDomainHistoryEntries() }
             putString("history", toStore)
         }
+        historyStateFlow.update { updated.toDomainHistoryEntries().sortedByDescending { it.completedAt } }
     }
 
     private fun getAllAsDataModel(): List<StorableHistoryEntry> {
@@ -68,7 +68,17 @@ class LocalHistoryRepository(
         prefs.edit {
             putString("history", encoded)
         }
-        historyStateFlow.update { updated.toDomainHistoryEntries() }
+        historyStateFlow.update { updated.toDomainHistoryEntries().sortedByDescending { it.completedAt } }
+    }
+
+    override suspend fun removeSessionBySessionId(swimSessionId: String) {
+        val current = getAllAsDataModel().toMutableList()
+        current.removeIf { it.swimSessionId == swimSessionId }
+        val encoded = Json.encodeToString(current)
+        prefs.edit {
+            putString("history", encoded)
+        }
+        historyStateFlow.update { current.toDomainHistoryEntries().sortedByDescending { it.completedAt } }
     }
 
     override suspend fun isEmpty(): Boolean = historyStateFlow.value.isEmpty()
