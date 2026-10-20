@@ -2,6 +2,7 @@ package com.alexallafi.app.presentation
 
 import com.alexallafi.app.domain.usecase.CompleteSessionUseCase
 import com.alexallafi.app.domain.usecase.GetNextAvailableSessionUseCase
+import com.alexallafi.app.domain.usecase.SaveHistoryNoteUseCase
 import com.alexallafi.app.domain.usecase.SeeFavoriteSessionUseCase
 import com.alexallafi.app.domain.usecase.ViewHistoryUseCase
 import com.alexallafi.app.domain.usecase.ViewProgramUseCase
@@ -28,5 +29,6 @@ val presentationModule =
         factoryOf(::GetNextAvailableSessionUseCase)
         factoryOf(::CompleteSessionUseCase)
         factoryOf(::ViewHistoryUseCase)
+        factoryOf(::SaveHistoryNoteUseCase)
         factoryOf(::ViewProgramUseCase)
     }

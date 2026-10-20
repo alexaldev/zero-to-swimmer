@@ -5,17 +5,31 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alexallafi.app.presentation.designsystem.AppTheme
@@ -24,12 +38,16 @@ import com.alexallafi.app.presentation.designsystem.ZeroToSwimmerTheme
 @Composable
 fun HistoryScreenRoot(viewModel: HistoryViewModel) {
     val items by viewModel.historyItems.collectAsState()
-    HistoryScreen(items)
+    HistoryScreen(
+        items = items,
+        onNoteSave = viewModel::onNoteSave,
+    )
 }
 
 @Composable
 fun HistoryScreen(
     items: List<HistoryListItem>,
+    onNoteSave: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -60,7 +78,10 @@ fun HistoryScreen(
                         }
 
                         is HistoryListItem.SessionItem -> {
-                            HistorySessionItem(item)
+                            HistorySessionItem(
+                                item = item,
+                                onNoteSave = onNoteSave,
+                            )
                         }
                     }
                 }
@@ -74,16 +95,19 @@ fun HistoryScreen(
 fun HistoryScreenPreview() {
     ZeroToSwimmerTheme {
         HistoryScreen(
-            listOf(
-                HistoryListItem.MonthHeader("January 2023"),
-                HistoryListItem.SessionItem(
-                    entryId = "1",
-                    sessionId = "session_1",
-                    sessionTitle = "Week 1 - Day 1",
-                    completedAt = "Yesterday at 18:30",
+            items =
+                listOf(
+                    HistoryListItem.MonthHeader("January 2023"),
+                    HistoryListItem.SessionItem(
+                        entryId = "1",
+                        sessionId = "session_1",
+                        sessionTitle = "Week 1 - Day 1",
+                        completedAt = "Yesterday at 18:30",
+                        notes = "Good session",
+                    ),
+                    HistoryListItem.MonthHeader("February 2023"),
                 ),
-                HistoryListItem.MonthHeader("February 2023"),
-            ),
+            onNoteSave = { _, _ -> },
         )
     }
 }
@@ -98,15 +122,19 @@ fun MonthHeaderItem(
         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
         color = MaterialTheme.colorScheme.primary,
         modifier =
-        modifier,
+            modifier,
     )
 }
 
 @Composable
 fun HistorySessionItem(
     item: HistoryListItem.SessionItem,
+    onNoteSave: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val focusManager = LocalFocusManager.current
+    var noteText by remember(item.entryId, item.notes) { mutableStateOf(item.notes) }
+
     Card(
         modifier = modifier.fillMaxWidth(),
         shape =
@@ -132,6 +160,37 @@ fun HistorySessionItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 8.dp),
+                thickness = 1.dp,
+            )
+
+            OutlinedTextField(
+                value = noteText,
+                onValueChange = { noteText = it },
+                label = { Text(text = "Notes") },
+                modifier = Modifier.padding(top = 4.dp).fillMaxWidth(),
+                trailingIcon = {
+                    if (noteText != item.notes) {
+                        IconButton(
+                            onClick = {
+                                onNoteSave(item.entryId, noteText)
+                                focusManager.clearFocus()
+                            },
+                        ) {
+                            Icon(imageVector = Icons.Default.Check, contentDescription = "Save Note")
+                        }
+                    }
+                },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = {
+                            onNoteSave(item.entryId, noteText)
+                            focusManager.clearFocus()
+                        },
+                    ),
+            )
         }
     }
 }
@@ -155,7 +214,9 @@ fun HistorySessionItemPreview() {
                     sessionId = "session_1",
                     sessionTitle = "Week 1 - Day 1",
                     completedAt = "Yesterday at 18:30",
+                    notes = "",
                 ),
+            onNoteSave = { _, _ -> },
         )
     }
 }

@@ -6,6 +6,7 @@ sealed class HistoryListItem {
         val entryId: String,
         val sessionId: String,
         val sessionTitle: String,
-        val completedAt: String
+        val completedAt: String,
+        val notes: String,
     ) : HistoryListItem()
 }
